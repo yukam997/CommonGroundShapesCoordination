@@ -19,15 +19,11 @@ export function Choice() {
       />
       <ul className="list-disc list-inside">
         <li>
-          The baseline cost for each parking spot is written on the diagram above.
+          The regular and discounted prices for each parking spot are written on the diagram above.
         </li>
         <li>
-          If you both select the same spot, you will be penalized, <strong>increasing your cost by 30 points</strong>.
+          If you both select the same spot, you will pay <strong>30 MU</strong>.
         </li>
-        <li>
-          If you both select different spots of the same color, you will receive a group discount, <strong>decreasing your cost by 10 points</strong>.
-        </li>
-
       </ul>
       <br />
       <p>Where do you want to park?</p>

@@ -30,18 +30,20 @@ Empirica.onStageEnded(({ stage }) => {
     const partnerChoice = partner.round.get("decision");
 
     let score;
-    if (playerChoice === "A" || playerChoice === "B") {
-      score = 20;
-    } 
-    if (playerChoice === "C") {
-      score = 18;
-    }
-    if (playerChoice === "D") {
-      score = 11;
-    }
     if (playerChoice === partnerChoice) {
       score += 30;
+    } else {
+      if (playerChoice === "A" || playerChoice === "B") {
+      score = 20;
+      } 
+      if (playerChoice === "C") {
+        score = 18;
+      }
+      if (playerChoice === "D") {
+        score = 11;
+      }
     }
+
 
     if ((playerChoice === "A" && partnerChoice === "B")||(playerChoice === "B" && partnerChoice === "A")||
         (playerChoice === "C" && partnerChoice === "D")||(playerChoice === "D" && partnerChoice === "C")) {
