@@ -37,12 +37,11 @@ export function ExitSurvey({ next }) {
     <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       <Alert title="Bonus">
         <p>
-          Please submit the following code to receive your bonus:{" "}
-          <strong>{player.id}</strong>.
+          You should receive your payment including the bonus payment within the next 24 hours.
         </p>
         <p className="pt-1">
           Your final <strong>bonus</strong> is in addition of the{" "}
-          <strong>1 base reward</strong> for completing the HIT.
+          <strong>$1.4 </strong> for completing the survey.
         </p>
       </Alert>
 
@@ -57,82 +56,12 @@ export function ExitSurvey({ next }) {
                 Exit Survey
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                Please answer the following short survey. You do not have to
-                provide any information you feel uncomfortable with.
+                We would appreciate any feedback, if you have any comments on how we could improve our study design!
               </p>
             </div>
 
             <div className="space-y-8 mt-6">
-              <div className="flex flex-row">
-                <div>
-                  <label htmlFor="email" className={labelClassName}>
-                    Age
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="age"
-                      name="age"
-                      type="number"
-                      autoComplete="off"
-                      className={inputClassName}
-                      value={age}
-                      onChange={(e) => setAge(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="ml-5">
-                  <label htmlFor="email" className={labelClassName}>
-                    Gender
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="gender"
-                      name="gender"
-                      autoComplete="off"
-                      className={inputClassName}
-                      value={gender}
-                      onChange={(e) => setGender(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className={labelClassName}>
-                  Highest Education Qualification
-                </label>
-                <div className="grid gap-2">
-                  <Radio
-                    selected={education}
-                    name="education"
-                    value="high-school"
-                    label="High School"
-                    onChange={handleEducationChange}
-                  />
-                  <Radio
-                    selected={education}
-                    name="education"
-                    value="bachelor"
-                    label="US Bachelor's Degree"
-                    onChange={handleEducationChange}
-                  />
-                  <Radio
-                    selected={education}
-                    name="education"
-                    value="master"
-                    label="Master's or higher"
-                    onChange={handleEducationChange}
-                  />
-                  <Radio
-                    selected={education}
-                    name="education"
-                    value="other"
-                    label="Other"
-                    onChange={handleEducationChange}
-                  />
-                </div>
-              </div>
-
+            
               <div className="grid grid-cols-3 gap-x-6 gap-y-3">
                 <label className={labelClassName}>
                   How would you describe your strength in the game?

@@ -14,8 +14,7 @@ export function Introduction({ next }) {
         <p>1. If you and your partner park in the <strong>same spot</strong>, as a penalty, regardless of the regular cost of the parking spot you choose, you will pay exactly <strong> 30MU.</strong></p>
         <p>2. If you and your partner park in different spots of the <strong>same color</strong>, you will receive <strong>a group discount of 10MU.</strong></p>
         <p>3. The regular price and the discounted price will be written on the parking spot.</p>
-        <p>The bonus payment for this experiment depends on your total MU across all rounds in the game. This will be calculated based on this equation:</p>
-        <p> <strong>$5 – (total MU you paid)*$0.01 </strong></p>
+        <p>The bonus payment for this experiment depends on your total MU across all rounds in the game. For each round you will earn a bonus of <strong>$0.01</strong> for every MU you save compared to the maximum possible payment (which is 30MU).</p>
         <p>In other words, your goal is to <strong>minimize the total MU</strong> you pay in this parking game.</p>
       </div>
       <Button handleClick={next} autoFocus>
