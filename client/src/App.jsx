@@ -1,32 +1,49 @@
 import { EmpiricaClassic } from "@empirica/core/player/classic";
 import { EmpiricaContext } from "@empirica/core/player/classic/react";
 import { EmpiricaMenu, EmpiricaParticipant } from "@empirica/core/player/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Game } from "./Game";
 import { ExitSurvey } from "./intro-exit/ExitSurvey";
 import { ReturnToProlific } from "./intro-exit/ExitSlide";
 import { Introduction } from "./intro-exit/Introduction";
 import { MyConsent } from "./intro-exit/Consent";
+import { MyPlayerForm } from "./intro-exit/PlayerCreate.jsx";
+import { NoGameSurvey } from "./intro-exit/NoGameExitSurvey.jsx";
 import { usePlayer } from "@empirica/core/player/classic/react";
 export default function App() {
   const { protocol, host } = window.location;
   const urlParams = new URLSearchParams(window.location.search);
-  const player = usePlayer();
   const url = `${protocol}//${host}/query`;
-  const prolificPID = urlParams.get('PROLIFIC_PID');
-  const playerKey = prolificPID
-  console.log("Prolific PID:", prolificPID);
+  const playerKey = urlParams.get('PROLIFIC_PID');
+  const player = usePlayer();
+  console.log("Prolific ID:", playerKey);
+
+  // player.set("id", playerKey);
+  // player.set("userInfo", {
+  //     "ProlificID": playerKey
+  //   })
   function introSteps({ game, player }) {
     return [Introduction];
   }
   function exitSteps({ game, player }) {
-    return [ExitSurvey,ReturnToProlific];
+    console.log("Player ended status:", player.get('ended'));
+    //console.log("game ended reason:", game.get("endedReason"))
+    if (player.get('ended') === "game disconnected") {
+      console.log("Player disconnected from game.");
+    }
+    if (player.get('ended') === "game ended" || player.get('endedInactive')){
+      return [ExitSurvey,ReturnToProlific];
+    }
+    else {
+      return [NoGameSurvey];
+    }
   }
   return (
     <EmpiricaParticipant url={url} ns={playerKey} modeFunc={EmpiricaClassic}>
       <div className="h-screen relative">
+        <EmpiricaMenu position="bottom-left" />
         <div className="h-full overflow-auto">
-          <EmpiricaContext consent={MyConsent} introSteps={introSteps} exitSteps={exitSteps}>
+          <EmpiricaContext playerCreate={MyPlayerForm} consent={MyConsent} introSteps={introSteps} exitSteps={exitSteps}>
             <Game />
           </EmpiricaContext>
         </div>

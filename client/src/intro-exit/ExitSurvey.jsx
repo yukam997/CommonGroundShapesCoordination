@@ -35,6 +35,11 @@ export function ExitSurvey({ next }) {
 
   return (
     <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Alert title="Disconnected">
+        <p>
+          The game has ended or you and/or your partner disconnected. Thanks for playing!
+        </p>
+      </Alert>
       <Alert title="Bonus">
         <p>
           You should receive your payment including the bonus payment within the next 24 hours.

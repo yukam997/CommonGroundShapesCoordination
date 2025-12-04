@@ -2,7 +2,7 @@ d <- read.csv("strategy_count.csv")
 library(ggplot2)
 
 p <- ggplot(d,aes(x=strategy,y=count)) + geom_col() +
-  labs(x = "norm type", y = "% pairs exhibiting norm", title = "Condition 3 in Figure 3")
+  labs(x = "norm type", y = "# pairs exhibiting norm", title = "Condition 3 in Figure 3") + theme_minimal() + scale_x_discrete(limits = c("stable_orange", "stable_purple", "alternating", "other"))
 ggsave("strategy_plot.png", plot = p, width = 6, height = 4, dpi = 300)
 
 df <- read.csv("../pilotA_results/playerRound.csv")

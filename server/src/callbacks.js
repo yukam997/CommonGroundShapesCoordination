@@ -8,8 +8,8 @@ Empirica.onGameStart(({ game }) => {
     const round = game.addRound({
       name: `Round ${i}`,
     });
-    round.addStage({ name: "choice", duration: 10000 });
-    round.addStage({ name: "result", duration: 10000 });
+    round.addStage({ name: "choice", duration: 500 });
+    round.addStage({ name: "result", duration: 500 });
   }
 });
 
@@ -26,9 +26,18 @@ Empirica.onStageEnded(({ stage }) => {
   for (const player of players) {
     console.log("computing cost for player ", player.id);
     const partner = players.filter((p) => p.id !== player.id)[0];
-    const playerChoice = player.round.get("decision");
-    const partnerChoice = partner.round.get("decision");
-
+    try {
+      const playerChoice = player.round.get("decision");
+      const partnerChoice = partner.round.get("decision");
+      if (!partnerChoice||!playerChoice) {
+        console.log("One of the players did not make a choice.");
+        throw new Error("No partner found");
+      }
+    } catch (error) {
+      console.error(error);
+      continue;
+    }
+    console.log(`Player choice: ${playerChoice||"not found"}, Partner choice: ${partnerChoice||"not found"}`);
     let score;
     if (playerChoice === partnerChoice) {
       score = 30;
@@ -55,6 +64,52 @@ Empirica.onStageEnded(({ stage }) => {
   }
 });
 
-Empirica.onRoundEnded(({ round }) => {});
+Empirica.onRoundEnded(({ round }) => {
+});
+// Empirica.onRoundEnded(({ round }) => {
+//   const players = round.currentGame.players;
+//   const game = round.currentGame;
+//   const target = round.get('target');
+//   const selectedAnswer = round.get('selection')
+
+//   // Update player scores
+//   players.forEach(player => {
+//     const currScore = player.get("bonus") || 0;
+//     const scoreIncrement = selectedAnswer === target ? .03 : 0;
+//     player.set("bonus", scoreIncrement + currScore);
+//     player.set("score", scoreIncrement + currScore);
+//   })
+//   const currentSelection = round.get('selection');
+//   const currentInactive = game.get("numRoundsInactive");
+
+//   console.log(`Game ${game.id} - ${round.get("trialNum")}/${round.get("numTrials")}`);
+//   console.log(`- target: "${target}", selection: "${currentSelection}", inactive count: ${game.get("numRoundsInactive")}`);
+  
+//   if (currentSelection === '') {
+//     // No selection - increment inactivity counter
+//     const currNumInactive = game.get("numRoundsInactive");
+//     const newInactiveCount = currNumInactive + 1;
+//     game.set("numRoundsInactive", newInactiveCount);
+  
+//     // Check if exceeded timeout
+//     if (newInactiveCount >= game.get("maxTimeout")) {
+//       if (!game.get("ended")) {
+//         console.log(`Marking Game ${game.id} as ended due to timeout`);
+//         game.set("endedInactive", true);
+//         game.end("ended", "timeOut");
+//       }
+//     }
+//   } else {
+//     // Only log if we're resetting from an inactive state
+//     if (currentInactive > 0) {
+//       console.log(`Reset inactivity counter for game ${game.id} - they responded after ${currentInactive} inactive rounds`);
+//     } 
+//     game.set("numRoundsInactive", 0);
+//   }
+
+//   // Save outcomes as property of round for later export/analysis
+//   round.set('response', round.get('selection'));
+//   round.set('correct', target === round.get('selection'));
+// });
 
 Empirica.onGameEnded(({ game }) => {});

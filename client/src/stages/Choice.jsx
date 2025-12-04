@@ -15,7 +15,7 @@ export function Choice() {
       <h2>There are 4 spots in the parking lot, 2 orange and 2 purple. </h2>
       <img
         src={parkingImg}
-        className="mx-auto my-4 w-64 rounded-md shadow-md"
+        className="mx-auto my-4 w-full max-w-xl rounded-md shadow-md"
       />
       <ul className="list-disc list-inside">
         <li>
