@@ -6,6 +6,7 @@ import { Game } from "./Game";
 import { ExitSurvey } from "./intro-exit/ExitSurvey";
 import { ReturnToProlific } from "./intro-exit/ExitSlide";
 import { Introduction } from "./intro-exit/Introduction";
+import { Introduction2 } from "./intro-exit/Introduction2";
 import { MyConsent } from "./intro-exit/Consent";
 import { MyPlayerForm } from "./intro-exit/PlayerCreate.jsx";
 import { NoGameSurvey } from "./intro-exit/NoGameExitSurvey.jsx";
@@ -18,17 +19,16 @@ export default function App() {
   const playerKey = urlParams.get('PROLIFIC_PID');
   const player = usePlayer();
   function introSteps({ game, player }) {
-    return [Introduction,writtenPlan];
+    return [Introduction,Introduction2,writtenPlan];
   }
   function exitSteps({ game, player }) {
-    const endedStatus = player.get("ended");
-    console.log("Player ended status:", endedStatus);
-    // NoGameSurvey only if explicitly marked as no game (lobby timeout)
-    // Otherwise show ExitSurvey (normal completion or disconnection)
-    if (game) {
-      return [ExitSurvey, ReturnToProlific];
+    // show different exit for timeout
+    if (player.get('ended') === "game ended"){
+      return [ExitSurvey,ReturnToProlific];
     }
-    return [NoGameSurvey];
+    else {
+      return [NoGameSurvey];
+    }
   }
   return (
     <EmpiricaParticipant url={url} ns={playerKey} modeFunc={EmpiricaClassic}>

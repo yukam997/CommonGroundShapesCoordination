@@ -1,30 +1,25 @@
 import React from "react";
-import { Button } from "../components/Button";
+import { Button } from "../components/Button.jsx";
 import { Alert } from "../components/Alert.jsx";
 import parkingImg from "../components/payoffs.png";
 
-export function Introduction({ next }) {
+export function Introduction2({ next }) {
   return (
     <div className="mt-3 sm:mt-5 p-20">
       <h3 className="text-lg leading-6 font-medium text-gray-900">
-        Instructions
+        Example Payoffs
       </h3>
       <div className="mt-2 mb-6">
-        <p>
-          In this experiment, you will play a car parking game with another participant. Your task is to choose where to park your car, but <strong>each parking spot has a different cost, which is quantified in Monetary Units (MU)</strong>. The cost of the parking spot also depends on where your partner parked as well. 
-        </p>
-        <p>
-          Here is the parking lot you'll use in this game. There are 4 spots: A and B are orange spots and C and D are purple spots.
-        </p>
         <img
           src={parkingImg}
           className="mx-auto my-4 w-full max-w-xl rounded-md shadow-md"
         />
-        <p>Your costs depend on coordination with your partner:</p>
+        <p>Here are some example payoffs:</p>
         <ul className="list-disc list-inside ml-4">
-          <li>Same spot → 30 MU penalty</li>
-          <li>Different spots, same color (A+B or C+D) → 10 MU discount</li>
-          <li>Different spots, different color → regular price shown on diagram.</li>
+          <li>You pick A, your partner picks A → you get a clashing-spot penalty, so you and your partner both pay 30 MU → you don't earn a bonus</li>
+          <li>You pick A, your partner picks B → you get a same-color discount, so you and your partner both pay 10 MU → you earn a bonus of 20 × $0.005 = $0.1</li>
+          <li>You pick C, your partner picks D → you get a same-color discount, so you pay 8 MU and your partner pays 1 MU → you earn a bonus of 22 × $0.005 = $0.11</li>
+          <li>You pick B, your partner picks C → you pay the regular cost, so you pay 20 MU and your partner pays 18 MU → you earn a bonus of 10 × $0.005 = $0.05</li>
         </ul>
         <br />
         <p>The bonus payment for this experiment depends on your total MU across all rounds in the game. For each round you will earn a bonus of <strong>$0.005</strong> for every MU you save compared to the maximum possible payment (which is 30MU).</p>

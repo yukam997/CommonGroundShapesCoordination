@@ -30,10 +30,10 @@ export function Profile() {
       <div className="flex space-x-3 items-center justify-end">
         <div className="flex flex-col items-center">
           <div className="text-xs font-semibold uppercase tracking-wide leading-none text-gray-400">
-            MU saved
+            current bonus
           </div>
           <div className="text-2xl font-semibold !leading-none tabular-nums">
-            {bonus} MU
+            $ {Math.round(bonus * 5)/1000}
           </div>
         </div>
         <div className="h-11 w-11">
