@@ -13,6 +13,7 @@ export function Result() {
       <p>Your partner chose: {partner.round.get("decision")}</p>
       <br />
       <p>Your cost is {30-player.round.get("bonus") || "TBD"}. </p>
+      
 
       <Button handleClick={() => player.stage.set("submit", true)}>
         Continue

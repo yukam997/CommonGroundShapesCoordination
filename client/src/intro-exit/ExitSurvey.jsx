@@ -9,48 +9,21 @@ export function ExitSurvey({ next }) {
     "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm";
   const player = usePlayer();
 
-  const [age, setAge] = useState("");
-  const [gender, setGender] = useState("");
   const [strength, setStrength] = useState("");
   const [fair, setFair] = useState("");
   const [feedback, setFeedback] = useState("");
-  const [education, setEducation] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
     player.set("exitSurvey", {
-      age,
-      gender,
       strength,
       fair,
       feedback,
-      education,
     });
     next();
   }
-
-  function handleEducationChange(e) {
-    setEducation(e.target.value);
-  }
-
-  return (
-    <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <Alert title="Disconnected">
-        <p>
-          The game has ended or you and/or your partner disconnected. Thanks for playing!
-        </p>
-      </Alert>
-      <Alert title="Bonus">
-        <p>
-          You should receive your payment including the bonus payment within the next 24 hours.
-        </p>
-        <p className="pt-1">
-          Your final <strong>bonus</strong> is in addition of the{" "}
-          <strong>$1.4 </strong> for completing the survey.
-        </p>
-      </Alert>
-
-      <form
+  const formContent = (
+  <form
         className="mt-12 space-y-8 divide-y divide-gray-200"
         onSubmit={handleSubmit}
       >
@@ -61,7 +34,7 @@ export function ExitSurvey({ next }) {
                 Exit Survey
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                We would appreciate any feedback, if you have any comments on how we could improve our study design!
+                Thank you for your participation! We would appreciate any feedback, including comments on how we could improve our study design!
               </p>
             </div>
 
@@ -117,7 +90,44 @@ export function ExitSurvey({ next }) {
             </div>
           </div>
         </div>
-      </form>
+      </form>)
+  console.log("exit survey","refreshed");
+  if (player.get("ended") === "time out" ) {
+    return (
+      <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"> 
+        <Alert title="Timed Out">
+          <p>
+            The game has timed out because you or your partner have exceeded the timelimit to respond. Thanks for playing!
+          </p>
+        </Alert>
+        {formContent}
+      </div>
+      );
+  }
+  if (player.get("ended") === "disconnected" ) {
+    return (
+      <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"> 
+        <Alert title="Disconnected">
+          <p>
+            The game has ended unexpectedly due to a disconnection. Thanks for playing!
+          </p>
+        </Alert>
+        {formContent}
+      </div>
+      );
+  }
+  return (
+    <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Alert title="Bonus">
+        <p>
+          You should receive your payment including the bonus payment within the next 24 hours.
+        </p>
+        <p className="pt-1">
+          Your final <strong>bonus</strong> is in addition of the{" "}
+          <strong>$1.4 </strong> for completing the survey.
+        </p>
+      </Alert>
+      {formContent}  
     </div>
   );
 }

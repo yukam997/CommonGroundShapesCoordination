@@ -2,6 +2,7 @@ import { ClassicListenersCollector } from "@empirica/core/admin/classic";
 export const Empirica = new ClassicListenersCollector();
 
 Empirica.onGameStart(({ game }) => {
+  const startTime = Date.now();
   const treatment = game.get("treatment");
   const {numRounds} = treatment;
   for (let i = 0; i < numRounds; i++) {
@@ -18,20 +19,17 @@ Empirica.onRoundStart(({ round }) => {});
 Empirica.onStageStart(({ stage }) => {});
 
 Empirica.onStageEnded(({ stage }) => {
+  const game = stage.currentGame;
   if (stage.get("name") !== "choice") return;
-  console.log("End of choice stage");
 
   const players = stage.currentGame.players;
-  const game = stage.currentGame;
-  
   for (const player of players) {
     console.log("computing cost for player ", player.id);
     const partner = players.filter((p) => p.id !== player.id)[0];
     const playerChoice = player.round.get("decision");
     const partnerChoice = partner.round.get("decision");
     if (!partnerChoice||!playerChoice) {
-      console.log("One of the players did not make a choice.");
-      console.log(`Marking Game ${game.id} as ended due to disconnection`);
+      console.log(player.round.get("submitted") , partner.round.get("submitted"));
       game.end("ended", "disconnected");
     }
     let score;
@@ -62,3 +60,4 @@ Empirica.onStageEnded(({ stage }) => {
 
 Empirica.onRoundEnded(({ round }) => {
 });
+Empirica.onGameEnded(({ game }) => {});

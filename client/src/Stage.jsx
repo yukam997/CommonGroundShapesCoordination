@@ -16,7 +16,9 @@ export function Stage() {
   const stage = useStage();
 
   if (player.stage.get("submit")) {
-    if (players.length === 1) {
+    const partner = players.filter((p) => p.id !== player.id)[0];
+    if (!partner.stage.get("submit")) {
+      console.log("loading bc waiting for other player");
       return <Loading />;
     }
 

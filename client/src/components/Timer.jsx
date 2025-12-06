@@ -1,12 +1,18 @@
-import { useStageTimer } from "@empirica/core/player/classic/react";
+import { useStageTimer,useStage } from "@empirica/core/player/classic/react";
 import React from "react";
 
 export function Timer() {
   const timer = useStageTimer();
+  const stage = useStage();
+  const game = stage.currentGame
 
   let remaining;
-  if (timer?.remaining || timer?.remaining === 0) {
+  if (timer?.remaining ) {
     remaining = Math.round(timer?.remaining / 1000);
+  } else {
+    // console.log("Time is up, ending the game");
+    // game.end("ended", "time out");
+    remaining = 0;
   }
 
   return (
