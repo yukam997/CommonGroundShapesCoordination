@@ -1,4 +1,5 @@
-import React from "react";
+import React ,{ useState }from "react";
+import { Button } from "../components/Button";
 import { usePlayer, usePlayers } from "@empirica/core/player/classic/react";
 
 export function Result() {
@@ -7,7 +8,17 @@ export function Result() {
   const partner = players.filter((p) => p.id !== player.id)[0];
   const cost = 30 - player.round.get("bonus");
   const myCost = player.stage.get("myCost") || "";
-
+  const [error, setError] = useState('');
+  function handleSubmit() {
+    // Validate the input
+    if (!myCost === "") {
+      setError(`Please write a number!`);
+      return; // Stop submission if it's not valid
+    }
+    setError(''); // Clear any previous error
+    player.stage.set("submit", true);
+    next();
+  }
   return (
     <div className="flex flex-col items-center justify-center py-8">
       <div className="text-center space-y-4">
@@ -30,8 +41,10 @@ export function Result() {
             />
           </label>
         </div>
+        <div className="mb-12">
 
-        <p className="text-sm text-gray-500 mt-6">Next round starting shortly...</p>
+          <Button handleClick={() => handleSubmit()}>Submit</Button>
+        </div>
       </div>
     </div>
   );

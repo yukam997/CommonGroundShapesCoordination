@@ -21,12 +21,11 @@ export function NoGameSurvey({ next }) {
       <Alert title="No Game Available">
         <p>
           Unfortunately, we were unable to match you with other participants for a game or experienced an error. You will still be compensated for your time spent in the waiting lobby.
-          
         </p>
       </Alert>
       <Alert title="Payment">
         <p>
-        If you would like to re-enter the queue, please contact the researcher on Prolific. Otherwise, press the submit button to receive the base payment of $1.4 for your time.
+        If you would like to re-enter the queue, please contact the researcher on Prolific. Otherwise, press the submit button to receive the base payment of $1.6 for your time.
         </p>
         <p className="pt-1">
           Thank you for your time and willingness to participate in our study.

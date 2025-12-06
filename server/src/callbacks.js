@@ -2,7 +2,6 @@ import { ClassicListenersCollector } from "@empirica/core/admin/classic";
 export const Empirica = new ClassicListenersCollector();
 
 Empirica.onGameStart(({ game }) => {
-  const startTime = Date.now();
   const treatment = game.get("treatment");
   const {numRounds} = treatment;
   for (let i = 0; i < numRounds; i++) {
@@ -10,7 +9,7 @@ Empirica.onGameStart(({ game }) => {
       name: `Round ${i}`,
     });
     round.addStage({ name: "choice", duration: 90 });
-    round.addStage({ name: "result", duration: 5 });
+    round.addStage({ name: "result", duration: 30 });
   }
 });
 

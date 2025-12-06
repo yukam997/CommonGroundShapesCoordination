@@ -61,6 +61,19 @@ export function Stage() {
       );
     }
   }
+  if (stage.get("name") === "result" && player.stage.get("submit")) {
+    const partner = players.filter((p) => p.id !== player.id)[0];
+
+    if (!partner.stage.get("submit")) {
+      return (
+        <div className="flex flex-col items-center justify-center py-12">
+          <div className="text-center max-w-md">
+            <span className="text-lg">Waiting for your partner to respond...</span>
+          </div>
+        </div>
+      );
+    }
+  }
   switch (stage.get("name")){
     case "choice":
       return <Choice  />;

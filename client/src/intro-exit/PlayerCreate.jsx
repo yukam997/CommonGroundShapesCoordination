@@ -7,7 +7,6 @@ export function MyPlayerForm({ onPlayerID, connecting }) {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    console.log("Submitted Prolific ID:", playerID);
     if (!playerID || playerID.trim() === "") {
       return;
     }
@@ -40,7 +39,7 @@ export function MyPlayerForm({ onPlayerID, connecting }) {
               </label>
               <div className="mt-1">
                 <input
-                  id="playerID"
+                  id="playerIxD"
                   name="playerID"
                   type="text"
                   autoComplete="off"
