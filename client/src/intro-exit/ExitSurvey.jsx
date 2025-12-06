@@ -91,10 +91,11 @@ export function ExitSurvey({ next }) {
           </div>
         </div>
       </form>)
-  console.log("exit survey","refreshed");
-  if (player.get("ended") === "time out" ) {
+  const endReason = player.get("endReason");
+  console.log("ExitSurvey - endReason:", endReason);
+  if (endReason === "timeout") {
     return (
-      <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"> 
+      <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <Alert title="Timed Out">
           <p>
             The game has timed out because you or your partner have exceeded the timelimit to respond. Thanks for playing!
@@ -104,12 +105,15 @@ export function ExitSurvey({ next }) {
       </div>
       );
   }
-  if (player.get("ended") === "disconnected" ) {
+  if (endReason === "disconnected") {
     return (
-      <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"> 
-        <Alert title="Disconnected">
+      <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Alert title="Game Ended Early">
           <p>
-            The game has ended unexpectedly due to a disconnection. Thanks for playing!
+            Unfortunately, your partner disconnected or did not respond in time, so the game ended early.
+          </p>
+          <p className="mt-2">
+            <strong>You will still receive compensation</strong> for your time. Please complete the short survey below to finish.
           </p>
         </Alert>
         {formContent}

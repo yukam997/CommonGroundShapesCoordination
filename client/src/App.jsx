@@ -21,14 +21,14 @@ export default function App() {
     return [Introduction,writtenPlan];
   }
   function exitSteps({ game, player }) {
-    console.log("Player ended status:", player.get("exitStatus"));
-    // show different exit for timeout
-    if (player.get('ended') === "game ended"){
-      return [ExitSurvey,ReturnToProlific];
+    const endedStatus = player.get("ended");
+    console.log("Player ended status:", endedStatus);
+    // NoGameSurvey only if explicitly marked as no game (lobby timeout)
+    // Otherwise show ExitSurvey (normal completion or disconnection)
+    if (game) {
+      return [ExitSurvey, ReturnToProlific];
     }
-    else {
-      return [NoGameSurvey];
-    }
+    return [NoGameSurvey];
   }
   return (
     <EmpiricaParticipant url={url} ns={playerKey} modeFunc={EmpiricaClassic}>

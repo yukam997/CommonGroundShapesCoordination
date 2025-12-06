@@ -9,8 +9,8 @@ Empirica.onGameStart(({ game }) => {
     const round = game.addRound({
       name: `Round ${i}`,
     });
-    round.addStage({ name: "choice", duration: 300 });
-    round.addStage({ name: "result", duration: 300 });
+    round.addStage({ name: "choice", duration: 90 });
+    round.addStage({ name: "result", duration: 5 });
   }
 });
 
@@ -28,9 +28,15 @@ Empirica.onStageEnded(({ stage }) => {
     const partner = players.filter((p) => p.id !== player.id)[0];
     const playerChoice = player.round.get("decision");
     const partnerChoice = partner.round.get("decision");
-    if (!partnerChoice||!playerChoice) {
-      console.log(player.round.get("submitted") , partner.round.get("submitted"));
+    if (!partnerChoice || !playerChoice) {
+      console.log("Missing choice - player:", playerChoice, "partner:", partnerChoice);
+      // Set end reason on all players before ending game
+      // Using "endReason" instead of "ended" to avoid Empirica overwriting it
+      for (const p of players) {
+        p.set("endReason", "disconnected");
+      }
       game.end("ended", "disconnected");
+      return;
     }
     let score;
     if (playerChoice === partnerChoice) {
@@ -60,4 +66,7 @@ Empirica.onStageEnded(({ stage }) => {
 
 Empirica.onRoundEnded(({ round }) => {
 });
-Empirica.onGameEnded(({ game }) => {});
+Empirica.onGameEnded(({ game }) => {
+  // Don't set "game ended" here - it can overwrite "disconnected" due to timing
+  // ExitSurvey will treat undefined/null as normal completion
+});
