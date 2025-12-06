@@ -1,6 +1,7 @@
 import React ,{ useState }from "react";
 import { Button } from "../components/Button";
 import { usePlayer, usePlayers } from "@empirica/core/player/classic/react";
+import parkingImg from "../components/payoffs.png";
 
 export function Result() {
   const player = usePlayer();
@@ -22,15 +23,19 @@ export function Result() {
   return (
     <div className="flex flex-col items-center justify-center py-8">
       <div className="text-center space-y-4">
+        <img
+          src={parkingImg}
+          className="mx-auto my-4 w-full max-w-xl rounded-md shadow-md"
+        />
         <div className="space-y-2">
           <p className="text-lg">You chose: <strong>{player.round.get("decision")}</strong></p>
           <p className="text-lg">Your partner chose: <strong>{partner.round.get("decision")}</strong></p>
         </div>
-        <p className="text-xl mt-4">Your cost is <strong>{cost} MU</strong></p>
+        <p className="text-xl mt-4">Your partner's cost is <strong>{30 - partner.round.get("bonus")} MU</strong></p>
 
         <div className="mt-4">
           <label className="block text-sm">
-            What was the cost you paid for this round?
+            What was the cost (MU) you paid for this round?
             <input
               id="myCost"
               name="myCost"
@@ -42,7 +47,6 @@ export function Result() {
           </label>
         </div>
         <div className="mb-12">
-
           <Button handleClick={() => handleSubmit()}>Submit</Button>
         </div>
       </div>

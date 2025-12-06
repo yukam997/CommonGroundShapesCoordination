@@ -12,18 +12,14 @@ export function Choice() {
 
   return (
     <div>
-      <h2>There are 4 spots in the parking lot, 2 orange and 2 purple. </h2>
       <img
         src={parkingImg}
         className="mx-auto my-4 w-full max-w-xl rounded-md shadow-md"
       />
       <ul className="list-disc list-inside">
-        <li>
-          The regular and discounted prices for each parking spot are written on the diagram above.
-        </li>
-        <li>
-          If you both select the same spot, you will pay <strong>30 MU</strong>.
-        </li>
+        <li>You park in the <strong>same spot</strong> → 30 MU penalty.</li>
+        <li>You park in <strong>different spots, same color (A+B or C+D)</strong> → 10 MU discount.</li>
+        <li>You park in <strong>different spots, different color</strong> → regular price shown on diagram.</li>
       </ul>
       <br />
       <p>Where do you want to park?</p>

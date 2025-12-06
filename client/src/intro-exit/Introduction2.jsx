@@ -21,9 +21,6 @@ export function Introduction2({ next }) {
           <li>You pick C, your partner picks D → you get a same-color discount, so you pay 8 MU and your partner pays 1 MU → you earn a bonus of 22 × $0.005 = $0.11</li>
           <li>You pick B, your partner picks C → you pay the regular cost, so you pay 20 MU and your partner pays 18 MU → you earn a bonus of 10 × $0.005 = $0.05</li>
         </ul>
-        <br />
-        <p>The bonus payment for this experiment depends on your total MU across all rounds in the game. For each round you will earn a bonus of <strong>$0.005</strong> for every MU you save compared to the maximum possible payment (which is 30MU).</p>
-        <p>In other words, your goal is to <strong>minimize the total MU</strong> you pay in this parking game.</p>
       </div>
       <Alert title="Important Notice">
         <p>

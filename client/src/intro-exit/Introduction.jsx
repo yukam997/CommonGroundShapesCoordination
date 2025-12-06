@@ -22,9 +22,9 @@ export function Introduction({ next }) {
         />
         <p>Your costs depend on coordination with your partner:</p>
         <ul className="list-disc list-inside ml-4">
-          <li>Same spot → 30 MU penalty</li>
-          <li>Different spots, same color (A+B or C+D) → 10 MU discount</li>
-          <li>Different spots, different color → regular price shown on diagram.</li>
+          <li>You park in the <strong>same spot</strong> → 30 MU penalty.</li>
+          <li>You park in <strong>different spots, same color (A+B or C+D)</strong> → 10 MU discount.</li>
+          <li>You park in <strong>different spots, different color</strong> → regular price shown on diagram.</li>
         </ul>
         <br />
         <p>The bonus payment for this experiment depends on your total MU across all rounds in the game. For each round you will earn a bonus of <strong>$0.005</strong> for every MU you save compared to the maximum possible payment (which is 30MU).</p>

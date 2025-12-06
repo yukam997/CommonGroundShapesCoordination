@@ -9,7 +9,7 @@ Empirica.onGameStart(({ game }) => {
       name: `Round ${i}`,
     });
     round.addStage({ name: "choice", duration: 90 });
-    round.addStage({ name: "result", duration: 30 });
+    round.addStage({ name: "result", duration: 20 });
   }
 });
 
