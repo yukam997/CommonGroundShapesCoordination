@@ -31,17 +31,23 @@ export function writtenPlan({ next }) {
         onSubmit={handleSubmit}
       >
         <div className="space-y-8 divide-y divide-gray-200">
-          <img
-              src={parkingImg}
-              className="mx-auto my-4 w-full max-w-xl rounded-md shadow-md"
-          />
+          <h2>What's your game plan? </h2>
+                <img
+                  src={parkingImg}
+                  className="mx-auto my-4 w-full max-w-xl rounded-md shadow-md"
+                />
+                <ul className="list-disc list-inside">
+                  <li>
+                    There are 4 spots in the parking lot, 2 orange and 2 purple.
+                  </li>
+                  <li>
+                    The regular and discounted prices for each parking spot are written on the diagram above.
+                  </li>
+                  <li>
+                    If you both select the same spot, you will pay <strong>30 MU</strong>.
+                  </li>
+                </ul>
           <div>
-            <h3 className="text-lg leading-6 font-medium text-gray-900">
-              What is your plan to maximize your earnings in the game?
-            </h3>
-           
-
-
             <div className="space-y-8 mt-6">
             
                <label className={labelClassName}>
