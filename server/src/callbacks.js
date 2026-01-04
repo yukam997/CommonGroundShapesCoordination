@@ -9,7 +9,7 @@ Empirica.onGameStart(({ game }) => {
       name: `Round ${i}`,
     });
     round.addStage({ name: "choice", duration: 90 });
-    round.addStage({ name: "result", duration: 20 });
+    round.addStage({ name: "result", duration: 30 });
   }
 });
 
@@ -32,6 +32,7 @@ Empirica.onStageEnded(({ stage }) => {
       // Set end reason on all players before ending game
       // Using "endReason" instead of "ended" to avoid Empirica overwriting it
       for (const p of players) {
+        //ended reason can also be that one didn't respond in time
         p.set("endReason", "disconnected");
       }
       game.end("ended", "disconnected");

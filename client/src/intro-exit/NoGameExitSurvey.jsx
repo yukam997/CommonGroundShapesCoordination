@@ -11,6 +11,7 @@ export function NoGameSurvey({ next }) {
     player.set("exitSurvey", {
       "gamefailed": "nogame"
     })
+    player.set("endReason","no game available");
     const completionCode = "CIE2WZHO"; // Your code from Prolific
     window.location.href = `https://app.prolific.co/submissions/complete?cc=${completionCode}`;
     next();

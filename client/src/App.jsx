@@ -12,6 +12,7 @@ import { MyPlayerForm } from "./intro-exit/PlayerCreate.jsx";
 import { NoGameSurvey } from "./intro-exit/NoGameExitSurvey.jsx";
 import { usePlayer } from "@empirica/core/player/classic/react";
 import { writtenPlan } from "./intro-exit/WritePlan.jsx"; 
+import { ReceiveAdvice } from "./intro-exit/Advice.jsx"; 
 export default function App() {
   const { protocol, host } = window.location;
   const urlParams = new URLSearchParams(window.location.search);
@@ -19,7 +20,7 @@ export default function App() {
   const playerKey = urlParams.get('PROLIFIC_PID');
   const player = usePlayer();
   function introSteps({ game, player }) {
-    return [Introduction,Introduction2,writtenPlan];
+    return [Introduction,Introduction2,ReceiveAdvice,writtenPlan];
   }
   function exitSteps({ game, player }) {
     // show different exit for timeout

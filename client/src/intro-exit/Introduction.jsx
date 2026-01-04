@@ -11,8 +11,9 @@ export function Introduction({ next }) {
       </h3>
       <div className="mt-2 mb-6">
         <p>
-          In this experiment, you will play a car parking game with another participant. Your task is to choose where to park your car, but <strong>each parking spot has a different cost, which is quantified in Monetary Units (MU)</strong>. The cost of the parking spot also depends on where your partner parked as well. 
+          In this experiment, you will play a car parking game with another participant. Your task is to choose where to park your car, but <strong>each parking spot has a different cost, which is quantified in Monetary Units (MU)</strong>. The cost of the parking spot also depends on where your partner parked. 
         </p>
+        <br />
         <p>
           Here is the parking lot you'll use in this game. There are 4 spots: A and B are orange spots and C and D are purple spots.
         </p>
@@ -20,14 +21,14 @@ export function Introduction({ next }) {
           src={parkingImg}
           className="mx-auto my-4 w-full max-w-xl rounded-md shadow-md"
         />
-        <p>Your costs depend on coordination with your partner:</p>
+        <p>Your costs are determined by how you and your partner coordinate:</p>
         <ul className="list-disc list-inside ml-4">
           <li>You park in the <strong>same spot</strong> → 30 MU penalty.</li>
           <li>You park in <strong>different spots, same color (A+B or C+D)</strong> → 10 MU discount.</li>
           <li>You park in <strong>different spots, different color</strong> → regular price shown on diagram.</li>
         </ul>
         <br />
-        <p>The bonus payment for this experiment depends on your total MU across all rounds in the game. For each round you will earn a bonus of <strong>$0.005</strong> for every MU you save compared to the maximum possible payment (which is 30MU).</p>
+        <p>The bonus payment for this experiment depends on your total MU across all rounds in the game. For each round you will earn a bonus of <strong>$0.005</strong> for every MU you save compared to the maximum possible cost (which is 30MU).</p>
         <p>In other words, your goal is to <strong>minimize the total MU</strong> you pay in this parking game.</p>
       </div>
       <Alert title="Important Notice">

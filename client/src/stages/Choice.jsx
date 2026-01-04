@@ -6,6 +6,7 @@ export function Choice() {
   const player = usePlayer();
 
   function onClick(choice) {
+    console.log("Player", player.id, "chose", choice,"and submitted");
     player.round.set("decision", choice);
     player.stage.set("submit", true);
   }

@@ -37,6 +37,7 @@ export function writtenPlan({ next }) {
               className="mx-auto my-4 w-full max-w-xl rounded-md shadow-md"
             />
             <div>
+              <p>As a reminder:</p>
               <ul className="list-disc list-inside">
                 <li>You park in the <strong>same spot</strong> → 30 MU penalty.</li>
                 <li>You park in <strong>different spots, same color (A+B or C+D)</strong> → 10 MU discount.</li>
@@ -47,7 +48,7 @@ export function writtenPlan({ next }) {
             <div className="space-y-8 mt-6">
             
                <label className={labelClassName}>
-                  Please write your game plan in a few sentences below:
+                  Please write your game plan in a few sentences below. Please note, this is purely to record your plan before playing the game, and <b>will not be shared with your partner</b>:
                 </label>
 
                 <textarea
