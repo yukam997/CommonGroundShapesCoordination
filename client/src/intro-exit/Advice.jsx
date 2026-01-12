@@ -1,7 +1,8 @@
 import { usePlayer } from "@empirica/core/player/classic/react";
 import React, { useState } from "react";
 import { Button } from "../components/Button.jsx";
-import parkingImg from "../components/payoffs.png";
+import { ParkingDiagram } from "./Introduction2.jsx";
+
 
 export function ReceiveAdvice({ next }) {
   const labelClassName = "block text-sm font-medium text-gray-700 my-2";

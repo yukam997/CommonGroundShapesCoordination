@@ -32,7 +32,7 @@ export function ParkingDiagram({ youParked, partnerParked }) {
   );
   
   return (
-    <svg width="745" height="410" viewBox="0 0 1490 820" className="mx-auto my-4 w-full max-w-3xl">
+    <svg width="745" height="410" viewBox="0 0 1490 820" className="mx-auto my-4 w-full max-w-xl">
       <defs>
         <style>{`
           .label { font: 32px Arial; fill: white; text-anchor: middle; }
