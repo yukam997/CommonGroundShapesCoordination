@@ -6,7 +6,7 @@ Empirica.onGameStart(({ game }) => {
   const {numRounds} = treatment;
   for (let i = 0; i < numRounds; i++) {
     const round = game.addRound({
-      name: `Round ${i}`,
+      name: i,
     });
     round.addStage({ name: "choice", duration: 90 });
     round.addStage({ name: "result", duration: 30 });

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../components/Button";
 import { Alert } from "../components/Alert.jsx";
-import parkingImg from "../components/payoffs.png";
+import { ParkingDiagram } from "./Introduction2.jsx";
 
 export function Introduction({ next }) {
   return (
@@ -17,10 +17,7 @@ export function Introduction({ next }) {
         <p>
           Here is the parking lot you'll use in this game. There are 4 spots: A and B are orange spots and C and D are purple spots.
         </p>
-        <img
-          src={parkingImg}
-          className="mx-auto my-4 w-full max-w-xl rounded-md shadow-md"
-        />
+        <ParkingDiagram />
         <p>Your costs are determined by how you and your partner coordinate:</p>
         <ul className="list-disc list-inside ml-4">
           <li>You park in the <strong>same spot</strong> → 30 MU penalty.</li>

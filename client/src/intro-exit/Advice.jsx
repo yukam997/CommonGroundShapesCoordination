@@ -9,7 +9,7 @@ export function ReceiveAdvice({ next }) {
     "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm";
   const player = usePlayer();
   const [showAdvice, setShowAdvice] = useState(false);
-  const advice = "Alternate between spot C and D. That way you get a low payoff and your partner will be happy too.";
+  const advice = "pick an orange spot and stick with it"; // Example advice; in practice, this would be assigned from another player's input
   function handleSubmit(event) {
     event.preventDefault();
     // Validate the input
@@ -29,10 +29,7 @@ export function ReceiveAdvice({ next }) {
             Before you start, you will be given advice from a player who has played the game before you.{"\n"}
             <b>Note: The advice is assigned randomly, so your partner may have received advice from someone else.</b>
           </p>
-            <img
-              src={parkingImg}
-              className="mx-auto my-4 w-full max-w-xl rounded-md shadow-md"
-            />
+          <ParkingDiagram />
           <div>
             <div className="space-y-8 mt-6">
             

@@ -1,7 +1,7 @@
 import { usePlayer } from "@empirica/core/player/classic/react";
 import React, { useState } from "react";
 import { Button } from "../components/Button";
-import parkingImg from "../components/payoffs.png";
+import { ParkingDiagram } from "./Introduction2.jsx";
 
 export function writtenPlan({ next }) {
   const labelClassName = "block text-sm font-medium text-gray-700 my-2";
@@ -32,10 +32,7 @@ export function writtenPlan({ next }) {
       >
         <div className="space-y-8 divide-y divide-gray-200">
           <h2>What's your game plan? </h2>
-            <img
-              src={parkingImg}
-              className="mx-auto my-4 w-full max-w-xl rounded-md shadow-md"
-            />
+            <ParkingDiagram />
             <div>
               <p>As a reminder:</p>
               <ul className="list-disc list-inside">
@@ -47,7 +44,7 @@ export function writtenPlan({ next }) {
           <div>
             <div className="space-y-8 mt-6">
             
-               <label className={labelClassName}>
+                <label className={labelClassName}>
                   Please write your game plan in a few sentences below. Please note, this is purely to record your plan before playing the game, and <b>will not be shared with your partner</b>:
                 </label>
 

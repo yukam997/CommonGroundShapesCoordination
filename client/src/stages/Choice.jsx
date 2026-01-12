@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "../components/Button";
 import { usePlayer } from "@empirica/core/player/classic/react";
 import parkingImg from "../components/payoffs.png";
+import { ParkingDiagram } from "../intro-exit/Introduction2.jsx";  
 export function Choice() {
   const player = usePlayer();
 
@@ -13,10 +14,7 @@ export function Choice() {
 
   return (
     <div>
-      <img
-        src={parkingImg}
-        className="mx-auto my-4 w-full max-w-xl rounded-md shadow-md"
-      />
+      <ParkingDiagram />
       <ul className="list-disc list-inside">
         <li>You park in the <strong>same spot</strong> → 30 MU penalty.</li>
         <li>You park in <strong>different spots, same color (A+B or C+D)</strong> → 10 MU discount.</li>

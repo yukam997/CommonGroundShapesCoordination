@@ -2,7 +2,7 @@ import { Button } from "../components/Button";
 // ExitSurvey.jsx or final exit step
 export function ReturnToProlific({ player }) {
   function handleComplete() {
-    const completionCode = "CIE2WZHO"; // Your code from Prolific
+    const completionCode = "C1VG4L1R"; // Your code from Prolific
     window.location.href = `https://app.prolific.co/submissions/complete?cc=${completionCode}`;
   }
 
