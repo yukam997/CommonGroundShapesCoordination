@@ -36,7 +36,7 @@ export function ReturnToProlific({ player }) {
         </p>
         <p className="text-gray-700 font-semibold">
           If you are seeing this screen even if you didn't complete the study, 
-          you will still receive the payment of $2.40 for your participation!
+          you will still receive the payment of $2.0 for your participation!
         </p>
       </div>
 

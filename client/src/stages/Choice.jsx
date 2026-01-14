@@ -16,9 +16,9 @@ export function Choice() {
     <div>
       <ParkingDiagram />
       <ul className="list-disc list-inside">
-        <li>You park in the <strong>same spot</strong> → 30 MU penalty.</li>
-        <li>You park in <strong>different spots, same color (A+B or C+D)</strong> → 10 MU discount.</li>
-        <li>You park in <strong>different spots, different color</strong> → regular price shown on diagram.</li>
+        <li>You park in the <strong>same spot</strong> 0 MU (collision).</li>
+        <li>You park in <strong>different spots, same color (A+B or C+D)</strong> → 10 MU bonus + regular earnings.</li>
+        <li>You park in <strong>different spots, different color</strong> → regular earnings based on spot: A=10, B=10, C=12, D=19.</li>
       </ul>
       <br />
       <p>Where do you want to park?</p>

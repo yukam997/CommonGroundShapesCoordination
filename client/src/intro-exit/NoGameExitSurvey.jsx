@@ -25,9 +25,6 @@ export function NoGameSurvey({ next }) {
         </p>
       </Alert>
       <Alert title="Payment">
-        <p>
-        If you would like to re-enter the queue, please contact the researcher on Prolific. Otherwise, press the submit button to receive the base payment of $1.6 for your time.
-        </p>
         <p className="pt-1">
           Thank you for your time and willingness to participate in our study.
         </p>

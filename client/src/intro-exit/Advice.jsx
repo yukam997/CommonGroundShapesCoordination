@@ -2,15 +2,16 @@ import { usePlayer } from "@empirica/core/player/classic/react";
 import React, { useState } from "react";
 import { Button } from "../components/Button.jsx";
 import { ParkingDiagram } from "./Introduction2.jsx";
-
+import { useGame } from "@empirica/core/player/classic/react";
 
 export function ReceiveAdvice({ next }) {
   const labelClassName = "block text-sm font-medium text-gray-700 my-2";
   const inputClassName =
     "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm";
   const player = usePlayer();
+  const game = useGame();
+  const { advice,adviceType } = game.get("treatment");
   const [showAdvice, setShowAdvice] = useState(false);
-  const advice = "pick an orange spot and stick with it"; // Example advice; in practice, this would be assigned from another player's input
   function handleSubmit(event) {
     event.preventDefault();
     // Validate the input
@@ -28,7 +29,7 @@ export function ReceiveAdvice({ next }) {
         <div className="space-y-8 divide-y divide-gray-200">
           <p className="whitespace-pre-line">
             Before you start, you will be given advice from a player who has played the game before you.{"\n"}
-            <b>Note: The advice is assigned randomly, so your partner may have received advice from someone else.</b>
+            <b>Note: {adviceType === "CG" ? "Your partner will have seen the exact same advice as you" : "The advice is assigned randomly, so your partner may have received advice from someone else."}</b>
           </p>
           <ParkingDiagram />
           <div>

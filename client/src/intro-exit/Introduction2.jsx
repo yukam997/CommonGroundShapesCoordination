@@ -4,10 +4,10 @@ import { Alert } from "../components/Alert.jsx";
 
 export function ParkingDiagram({ youParked, partnerParked }) {
   const spots = [
-    { x: 17, letter: 'A', regularPrice: 20, discountPrice: 10, color: '#FFA500' },
-    { x: 383, letter: 'B', regularPrice: 20, discountPrice: 10, color: '#FFA500' },
-    { x: 749, letter: 'C', regularPrice: 18, discountPrice: 8, color: '#7814d5ff' },
-    { x: 1115, letter: 'D', regularPrice: 11, discountPrice: 1, color: '#7814d5ff' }
+    { x: 17, letter: 'A', regularPoints: 10, discountPoints: 20, color: '#FFA500' },
+    { x: 383, letter: 'B', regularPoints: 10, discountPoints: 20, color: '#FFA500' },
+    { x: 749, letter: 'C', regularPoints: 12, discountPoints: 22, color: '#7814d5ff' },
+    { x: 1115, letter: 'D', regularPoints: 19, discountPoints: 29, color: '#7814d5ff' }
   ];
   
   const black = '#2a2a2a';
@@ -53,10 +53,10 @@ export function ParkingDiagram({ youParked, partnerParked }) {
         return (
           <g key={i} transform={`translate(${spot.x}, 97)`}>
             <use href="#spot-base"/>
-            <text x="173" y="68" className="label">Regular price:</text>
-            <text x="173" y="153" className="value">{spot.regularPrice}MU</text>
-          <text x="173" y="233" className="label">Discount price:</text>
-          <text x="173" y="318" className="value">{spot.discountPrice}MU</text>
+            <text x="173" y="68" className="label">Regular Earnings:</text>
+            <text x="173" y="153" className="value">{spot.regularPoints}MU</text>
+          <text x="173" y="233" className="label">Earnings w/ Bonus:</text>
+          <text x="173" y="318" className="value">{spot.discountPoints}MU</text>
           <rect x="18" y="408" width="328" height="108" fill={spot.color}/>
           <text x="173" y="639" className="letter">{spot.letter}</text>
 
@@ -82,8 +82,8 @@ export function Introduction2({ next }) {
       partnerParked: "A",
       description: "→ You get a clashing-spot penalty",
       details: [
-        "You pay 30MU",
-        "Your partner pays 30 MU",
+        "You get 0 MU",
+        "Your partner gets 0 MU",
         "You earn a bonus of 0 × $0.005 = $0.00"
       ]
     },
@@ -93,8 +93,8 @@ export function Introduction2({ next }) {
       partnerParked: "B",
       description: "→ You get a same-color discount",
       details: [
-        "You pay 10 MU",
-        "Your partner pays 10 MU",
+        "You earn 20 MU",
+        "Your partner earns 20 MU",
         "You earn a bonus of 20 × $0.005 = $0.10"
       ]
     },
@@ -104,8 +104,8 @@ export function Introduction2({ next }) {
       partnerParked: "D",
       description: "→ You get a same-color discount",
       details: [
-        "You pay 8 MU",
-        "Your partner pays 1 MU",
+        "You earn 22 MU",
+        "Your partner earns 29 MU",
         "You earn a bonus of 22 × $0.005 = $0.11"
       ]
     },
@@ -115,8 +115,8 @@ export function Introduction2({ next }) {
       partnerParked: "C",
       description: "→ You pay the regular cost",
       details: [
-        "You pay 20 MU",
-        "Your partner pays 18 MU",
+        "You earn 10 MU",
+        "Your partner earns 12 MU",
         "You earn a bonus of 10 × $0.005 = $0.05"
       ]
     }

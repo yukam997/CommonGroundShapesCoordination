@@ -1,20 +1,53 @@
 factors:
-  - desc: playerCount determines the number of Players are in a Game.
-    name: playerCount
-    values:
-      - value: 2
-  - desc: numRounds
-    name: numRounds
-    values:
-      - value: 13
-  - desc: chatEnabled
-    name: chatEnabled
-    values:
-      - value: false
+    - name: playerCount
+      desc: playerCount determines the number of Players are in a Game.
+      values:
+        - value: 2
+    - name: numRounds
+      desc: numRounds
+      values:
+        - value: 13
+    - name: chatEnabled
+      desc: chatEnabled
+      values:
+        - value: false
+    - name: advice
+      values:
+        - value: coordinate with your partner to get a bonus.
+        - value: choose the highest scoring spot. your partner will accomodate.
+    - name: adviceType
+      values:
+        - value: CG
+        - value: noCG
 treatments:
-  - desc: "baseline"
-    factors:
-      playerCount: 2
-      numRounds: 13
-      chatEnabled: false
-    name: baseline
+    - name: noCG_cooperate
+      desc: noCG_cooperate
+      factors:
+        advice: coordinate with your partner to get a bonus.
+        adviceType: noCG
+        chatEnabled: false
+        numRounds: 13
+        playerCount: 2
+    - name: noCG_selfish
+      desc: noCG_selfish
+      factors:
+        advice: choose the highest scoring spot. your partner will accomodate.
+        adviceType: noCG
+        chatEnabled: false
+        numRounds: 13
+        playerCount: 2
+    - name: CG_cooperate
+      desc: CG_cooperate
+      factors:
+        advice: coordinate with your partner to get a bonus.
+        adviceType: CG
+        chatEnabled: false
+        numRounds: 13
+        playerCount: 2
+    - name: CG_selfish
+      desc: CG_selfish
+      factors:
+        advice: choose the highest scoring spot. your partner will accomodate.
+        adviceType: CG
+        numRounds: 13
+        playerCount: 2

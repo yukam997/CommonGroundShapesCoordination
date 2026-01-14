@@ -128,7 +128,7 @@ export function ExitSurvey({ next }) {
         </p>
         <p className="pt-1">
           Your final <strong>bonus</strong> is in addition of the{" "}
-          <strong>$1.6 </strong> for completing the survey.
+          <strong>$2.0 </strong> for completing the survey.
         </p>
       </Alert>
       {formContent}  

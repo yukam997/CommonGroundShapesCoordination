@@ -35,10 +35,10 @@ export function writtenPlan({ next }) {
             <ParkingDiagram />
             <div>
               <p>As a reminder:</p>
-              <ul className="list-disc list-inside">
-                <li>You park in the <strong>same spot</strong> → 30 MU penalty.</li>
-                <li>You park in <strong>different spots, same color (A+B or C+D)</strong> → 10 MU discount.</li>
-                <li>You park in <strong>different spots, different color</strong> → regular price shown on diagram.</li>
+              <ul className="list-disc list-inside ml-4">
+                <li>You park in the <strong>same spot</strong> 0 MU (collision).</li>
+                <li>You park in <strong>different spots, same color (A+B or C+D)</strong> → 10 MU bonus + regular earnings.</li>
+                <li>You park in <strong>different spots, different color</strong> → regular earnings based on spot: A=10, B=10, C=12, D=19.</li>
               </ul>
             </div>
           <div>

@@ -7,8 +7,8 @@ export function Result() {
   const player = usePlayer();
   const players = usePlayers();
   const partner = players.filter((p) => p.id !== player.id)[0];
-  const actualCost = 30 - player.round.get("bonus");
-  const myCost = player.stage.get("myCost") || "";
+  const myGain = player.stage.get("myGain") || "";
+  const actualGain = player.round.get("bonus")
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(3);
@@ -32,14 +32,14 @@ export function Result() {
 
   function handleSubmit() {
     // Validate the input
-    if (myCost === "") {
+    if (myGain === "") {
       setError(`Please write a number!`);
       return;
     }
     setError('');
     setSubmitted(true);
     setTimeRemaining(3);
-    player.stage.set("costCorrect", parseInt(myCost) === actualCost);
+    player.stage.set("costCorrect", parseInt(myGain) === actualGain);
   }
 
   function handleNext() {
@@ -56,16 +56,16 @@ export function Result() {
         </div>
         {round.get("name") % 4 === 0 ? (
             <div className="mt-4">
-            <p className="text-xl mt-4">Your partner's cost is <strong>{30 - partner.round.get("bonus")} MU</strong></p>
-            <label className="block text-sm" htmlFor="myCost">
-              What was the cost (MU) you paid for this round?
+            <p className="text-xl mt-4">Your partner's earnings is <strong>{partner.round.get("bonus")} MU</strong></p>
+            <label className="block text-sm" htmlFor="myGain">
+              What was the earnings (MU) you received for this round?
               <input
-                id="myCost"
-                name="myCost"
+                id="myGain"
+                name="myGain"
                 type="number"
                 className="ml-2 border rounded px-2 py-1"
-                value={myCost}
-                onChange={(e) => player.stage.set("myCost", e.target.value)}
+                value={myGain}
+                onChange={(e) => player.stage.set("myGain", e.target.value)}
                 disabled={submitted}
               />
             </label>
@@ -74,17 +74,17 @@ export function Result() {
             {submitted && (
               <div className="mt-2 p-3 bg-blue-50 rounded">
                 <p className="text-sm">
-                  <span className="font-semibold">Your entered cost:</span> {myCost} MU
+                  <span className="font-semibold">Your entered:</span> {myGain} MU
                 </p>
                 <p className="text-sm">
-                  <span className="font-semibold">Actual cost:</span> {actualCost} MU
+                  <span className="font-semibold">Actual earnings:</span> {actualGain} MU
                 </p>
-                {parseInt(myCost) !== actualCost && (
+                {parseInt(myGain) !== actualGain && (
                   <p className="text-red-600 text-sm mt-1">
-                    ⚠️ Your answer was incorrect. The actual cost was {actualCost} MU.
+                    ⚠️ Your answer was incorrect. The actual earnings was {actualGain} MU.
                   </p>
                 )}
-                {parseInt(myCost) === actualCost && (
+                {parseInt(myGain) === actualGain && (
                   <p className="text-green-600 text-sm mt-1">
                     ✓ Correct!
                   </p>
@@ -95,7 +95,7 @@ export function Result() {
               {submitted ? (
                   <p className="text-gray-600 font-medium">Please wait {timeRemaining}s...</p>
                 ) : (
-                  <Button handleClick={() => handleSubmit()} disabled={!myCost}>
+                  <Button handleClick={() => handleSubmit()} disabled={!myGain}>
                     Submit
                   </Button>
                 )}
@@ -103,7 +103,7 @@ export function Result() {
           </div>
           ) : (
           <div>
-            <p className="text-xl mt-4">Your cost is <strong>{30 - player.round.get("bonus")} MU</strong></p>
+            <p className="text-xl mt-4">Your earned <strong>{player.round.get("bonus")} MU</strong></p>
             <Button handleClick={() => handleNext()}>
               Next
             </Button>

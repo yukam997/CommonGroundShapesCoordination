@@ -11,22 +11,22 @@ export function Introduction({ next }) {
       </h3>
       <div className="mt-2 mb-6">
         <p>
-          In this experiment, you will play a car parking game with another participant. Your task is to choose where to park your car, but <strong>each parking spot has a different cost, which is quantified in Monetary Units (MU)</strong>. The cost of the parking spot also depends on where your partner parked. 
+          In this experiment, you will play a car parking game with another participant to gain points, quantified in Monetary Units (MU). You gain points by parking your car in a parking spot, but <strong>the amount you earn depends on the spot you parked, and also on where your partner parked.</strong>
         </p>
         <br />
         <p>
           Here is the parking lot you'll use in this game. There are 4 spots: A and B are orange spots and C and D are purple spots.
         </p>
         <ParkingDiagram />
-        <p>Your costs are determined by how you and your partner coordinate:</p>
+        <p>Your earnings are determined by how you and your partner coordinate:</p>
         <ul className="list-disc list-inside ml-4">
-          <li>You park in the <strong>same spot</strong> → 30 MU penalty.</li>
-          <li>You park in <strong>different spots, same color (A+B or C+D)</strong> → 10 MU discount.</li>
-          <li>You park in <strong>different spots, different color</strong> → regular price shown on diagram.</li>
+          <li>You park in the <strong>same spot</strong> 0 MU (collision).</li>
+          <li>You park in <strong>different spots, same color (A+B or C+D)</strong> → 10 MU bonus + regular earnings.</li>
+          <li>You park in <strong>different spots, different color</strong> → regular earnings based on spot: A=10, B=10, C=12, D=19.</li>
         </ul>
         <br />
-        <p>The bonus payment for this experiment depends on your total MU across all rounds in the game. For each round you will earn a bonus of <strong>$0.005</strong> for every MU you save compared to the maximum possible cost (which is 30MU).</p>
-        <p>In other words, your goal is to <strong>minimize the total MU</strong> you pay in this parking game.</p>
+        <p>The bonus payment for this experiment depends on your total MU at the end of the game. You will be paid a bonus <strong>$0.005</strong> for each MU you earn.</p>
+        <p>In other words, your goal is to <strong>maximize the total MU</strong> you earn in this parking game.</p>
       </div>
       <Alert title="Important Notice">
         <p>
