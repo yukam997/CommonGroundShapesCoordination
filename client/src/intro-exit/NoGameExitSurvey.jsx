@@ -23,8 +23,6 @@ export function NoGameSurvey({ next }) {
         <p>
           Unfortunately, we were unable to match you with other participants for a game or experienced an error. You will still be compensated for your time spent in the waiting lobby.
         </p>
-      </Alert>
-      <Alert title="Payment">
         <p className="pt-1">
           Thank you for your time and willingness to participate in our study.
         </p>
