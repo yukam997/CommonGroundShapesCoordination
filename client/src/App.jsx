@@ -13,6 +13,7 @@ import { NoGameSurvey } from "./intro-exit/NoGameExitSurvey.jsx";
 import { usePlayer } from "@empirica/core/player/classic/react";
 import { writtenPlan } from "./intro-exit/WritePlan.jsx"; 
 import { ReceiveAdvice } from "./intro-exit/Advice.jsx"; 
+
 export default function App() {
   const { protocol, host } = window.location;
   const urlParams = new URLSearchParams(window.location.search);

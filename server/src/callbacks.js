@@ -38,29 +38,26 @@ Empirica.onStageEnded(({ stage }) => {
       game.end("ended", "disconnected");
       return;
     }
-    let score;
-    if (playerChoice === partnerChoice) {
-      score = 30;
-    } else {
-      if (playerChoice === "A" || playerChoice === "B") {
-      score = 20;
-      } 
-      if (playerChoice === "C") {
-        score = 18;
-      }
-      if (playerChoice === "D") {
-        score = 11;
-      }
+    let bonus=0;
+    if (playerChoice === "A" || playerChoice === "B") {
+      bonus = 10;
     }
+    if (playerChoice === "C") {
+      bonus = 7;
+    }
+    if (playerChoice === "D") {
+      bonus = 19;
+    }
+    
 
 
     if ((playerChoice === "A" && partnerChoice === "B")||(playerChoice === "B" && partnerChoice === "A")||
         (playerChoice === "C" && partnerChoice === "D")||(playerChoice === "D" && partnerChoice === "C")) {
-      score -= 10;
-    } 
-    player.round.set("bonus", 30-score);
+      bonus += 10;
+    }
+    player.round.set("bonus", bonus);
     const currentBonus = player.get("bonus") || 0;
-    player.set("bonus", currentBonus + (30-score));
+    player.set("bonus", currentBonus + bonus);
   }
 });
 

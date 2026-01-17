@@ -22,7 +22,7 @@ export function Introduction({ next }) {
         <ul className="list-disc list-inside ml-4">
           <li>You park in the <strong>same spot</strong> 0 MU (collision).</li>
           <li>You park in <strong>different spots, same color (A+B or C+D)</strong> → 10 MU bonus + regular earnings.</li>
-          <li>You park in <strong>different spots, different color</strong> → regular earnings based on spot: A=10, B=10, C=12, D=19.</li>
+          <li>You park in <strong>different spots, different color</strong> → regular earnings based on spot: A=10, B=10, C=7, D=19.</li>
         </ul>
         <br />
         <p>The bonus payment for this experiment depends on your total MU at the end of the game. You will be paid a bonus <strong>$0.005</strong> for each MU you earn.</p>

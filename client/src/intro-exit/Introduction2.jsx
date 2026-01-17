@@ -6,7 +6,7 @@ export function ParkingDiagram({ youParked, partnerParked }) {
   const spots = [
     { x: 17, letter: 'A', regularPoints: 10, discountPoints: 20, color: '#FFA500' },
     { x: 383, letter: 'B', regularPoints: 10, discountPoints: 20, color: '#FFA500' },
-    { x: 749, letter: 'C', regularPoints: 12, discountPoints: 22, color: '#7814d5ff' },
+    { x: 749, letter: 'C', regularPoints: 7, discountPoints: 17, color: '#7814d5ff' },
     { x: 1115, letter: 'D', regularPoints: 19, discountPoints: 29, color: '#7814d5ff' }
   ];
   
@@ -91,7 +91,7 @@ export function Introduction2({ next }) {
       title: "Example 2: You pick A, your partner picks B",
       youParked: "A",
       partnerParked: "B",
-      description: "→ You get a same-color discount",
+      description: "→ You get a same-color bonus",
       details: [
         "You earn 20 MU",
         "Your partner earns 20 MU",
@@ -102,21 +102,21 @@ export function Introduction2({ next }) {
       title: "Example 3: You pick C, your partner picks D",
       youParked: "C",
       partnerParked: "D",
-      description: "→ You get a same-color discount",
+      description: "→ You get a same-color bonus",
       details: [
-        "You earn 22 MU",
+        "You earn 17 MU",
         "Your partner earns 29 MU",
-        "You earn a bonus of 22 × $0.005 = $0.11"
+        "You earn a bonus of 17 × $0.005 = $0.085"
       ]
     },
     {
       title: "Example 4: You pick B, your partner picks C",
       youParked: "B",
       partnerParked: "C",
-      description: "→ You pay the regular cost",
+      description: "→ You get the regular earnings",
       details: [
         "You earn 10 MU",
-        "Your partner earns 12 MU",
+        "Your partner earns 7 MU",
         "You earn a bonus of 10 × $0.005 = $0.05"
       ]
     }

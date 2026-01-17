@@ -4,17 +4,15 @@ factors:
       values:
         - value: 2
     - name: numRounds
-      desc: numRounds
       values:
         - value: 13
     - name: chatEnabled
-      desc: chatEnabled
       values:
         - value: false
     - name: advice
       values:
-        - value: coordinate with your partner to get a bonus.
-        - value: choose the highest scoring spot. your partner will accomodate.
+        - value: do what's best for you and your partner. that will be easier to coordinate.
+        - value: do what's best for you. your partner will accomodate.
     - name: adviceType
       values:
         - value: CG
@@ -23,7 +21,7 @@ treatments:
     - name: noCG_cooperate
       desc: noCG_cooperate
       factors:
-        advice: coordinate with your partner to get a bonus.
+        advice: do what's best for you and your partner. that will be easier to coordinate.
         adviceType: noCG
         chatEnabled: false
         numRounds: 13
@@ -31,7 +29,7 @@ treatments:
     - name: noCG_selfish
       desc: noCG_selfish
       factors:
-        advice: choose the highest scoring spot. your partner will accomodate.
+        advice: do what's best for you. your partner will accomodate.
         adviceType: noCG
         chatEnabled: false
         numRounds: 13
@@ -39,7 +37,7 @@ treatments:
     - name: CG_cooperate
       desc: CG_cooperate
       factors:
-        advice: coordinate with your partner to get a bonus.
+        advice: do what's best for you and your partner. that will be easier to coordinate.
         adviceType: CG
         chatEnabled: false
         numRounds: 13
@@ -47,7 +45,7 @@ treatments:
     - name: CG_selfish
       desc: CG_selfish
       factors:
-        advice: choose the highest scoring spot. your partner will accomodate.
+        advice: do what's best for you. your partner will accomodate.
         adviceType: CG
         numRounds: 13
         playerCount: 2
