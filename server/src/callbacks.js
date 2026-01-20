@@ -39,16 +39,22 @@ Empirica.onStageEnded(({ stage }) => {
       return;
     }
     let bonus=0;
-    if (playerChoice === "A" || playerChoice === "B") {
-      bonus = 10;
+    if (playerChoice === partnerChoice) {
+      bonus = 0;
+      console.log("Both chose the same spot. Collision!");
+      player.round.set("bonus", bonus);
+      continue;
+    } else {
+      if (playerChoice === "A" || playerChoice === "B") {
+        bonus = 10;
+      }
+      if (playerChoice === "C") {
+        bonus = 19;
+      }
+      if (playerChoice === "D") {
+        bonus = 7;
+      }
     }
-    if (playerChoice === "C") {
-      bonus = 7;
-    }
-    if (playerChoice === "D") {
-      bonus = 19;
-    }
-    
 
 
     if ((playerChoice === "A" && partnerChoice === "B")||(playerChoice === "B" && partnerChoice === "A")||

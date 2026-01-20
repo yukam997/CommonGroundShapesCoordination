@@ -6,8 +6,8 @@ export function ParkingDiagram({ youParked, partnerParked }) {
   const spots = [
     { x: 17, letter: 'A', regularPoints: 10, discountPoints: 20, color: '#FFA500' },
     { x: 383, letter: 'B', regularPoints: 10, discountPoints: 20, color: '#FFA500' },
-    { x: 749, letter: 'C', regularPoints: 7, discountPoints: 17, color: '#7814d5ff' },
-    { x: 1115, letter: 'D', regularPoints: 19, discountPoints: 29, color: '#7814d5ff' }
+    { x: 749, letter: 'C', regularPoints: 19, discountPoints: 29, color: '#7814d5ff' },
+    { x: 1115, letter: 'D', regularPoints: 7, discountPoints: 17, color: '#7814d5ff' }
   ];
   
   const black = '#2a2a2a';
@@ -104,9 +104,9 @@ export function Introduction2({ next }) {
       partnerParked: "D",
       description: "→ You get a same-color bonus",
       details: [
-        "You earn 17 MU",
-        "Your partner earns 29 MU",
-        "You earn a bonus of 17 × $0.005 = $0.085"
+        "You earn 29 MU",
+        "Your partner earns 17 MU",
+        "You earn a bonus of 29 × $0.005 = $0.145"
       ]
     },
     {
@@ -116,7 +116,7 @@ export function Introduction2({ next }) {
       description: "→ You get the regular earnings",
       details: [
         "You earn 10 MU",
-        "Your partner earns 7 MU",
+        "Your partner earns 19 MU",
         "You earn a bonus of 10 × $0.005 = $0.05"
       ]
     }

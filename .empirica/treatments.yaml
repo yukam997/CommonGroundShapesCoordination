@@ -11,8 +11,8 @@ factors:
         - value: false
     - name: advice
       values:
-        - value: do what's best for you and your partner. that will be easier to coordinate.
-        - value: do what's best for you. your partner will accomodate.
+        - value: Try to find an outcome that's fair for both of you.
+        - value: Try to get the best outcome for yourself.
     - name: adviceType
       values:
         - value: CG
@@ -21,7 +21,7 @@ treatments:
     - name: noCG_cooperate
       desc: noCG_cooperate
       factors:
-        advice: do what's best for you and your partner. that will be easier to coordinate.
+        advice: Try to find an outcome that's fair for both of you.
         adviceType: noCG
         chatEnabled: false
         numRounds: 13
@@ -29,7 +29,7 @@ treatments:
     - name: noCG_selfish
       desc: noCG_selfish
       factors:
-        advice: do what's best for you. your partner will accomodate.
+        advice: Try to get the best outcome for yourself.
         adviceType: noCG
         chatEnabled: false
         numRounds: 13
@@ -37,7 +37,7 @@ treatments:
     - name: CG_cooperate
       desc: CG_cooperate
       factors:
-        advice: do what's best for you and your partner. that will be easier to coordinate.
+        advice: Try to find an outcome that's fair for both of you.
         adviceType: CG
         chatEnabled: false
         numRounds: 13
@@ -45,7 +45,7 @@ treatments:
     - name: CG_selfish
       desc: CG_selfish
       factors:
-        advice: do what's best for you. your partner will accomodate.
+        advice: Try to get the best outcome for yourself.
         adviceType: CG
         numRounds: 13
         playerCount: 2

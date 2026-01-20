@@ -1,31 +1,23 @@
-import { usePlayer, useGame } from "@empirica/core/player/classic/react";
+import { usePlayer } from "@empirica/core/player/classic/react";
 import React, { useState } from "react";
-import { Alert } from "../components/Alert";
-import { Button } from "../components/Button";
+import { Alert } from "../components/Alert.jsx";
+import { Button } from "../components/Button.jsx";
 
-export function ExitSurvey({ next }) {
+export function PartnerFeedback({ next }) {
   const labelClassName = "block text-sm font-medium text-gray-700 my-2";
   const inputClassName =
     "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm";
   const player = usePlayer();
-  const game = useGame();
-  const { adviceType } = game.get("treatment");
-  const [adviceFollowed, setAdviceFollowed] = useState("");
-  const [partnerAdvice, setPartnerAdvice] = useState("");
+
+  const [strength, setStrength] = useState("");
+  const [fair, setFair] = useState("");
   const [feedback, setFeedback] = useState("");
-  const minCharCount = 5; // Minimum character count for validation
-  const [error, setError] = useState('');
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (adviceFollowed.length < minCharCount && partnerAdvice.length < minCharCount) {
-      setError(`Please give a more detailed response on the first question!`);
-      return; // Stop submission if it's not valid
-    }
-    setError(''); // Clear any previous error
     player.set("exitSurvey", {
-      adviceFollowed,
-      partnerAdvice,
+      strength,
+      fair,
       feedback,
     });
     next();
@@ -47,53 +39,31 @@ export function ExitSurvey({ next }) {
             </div>
 
             <div className="space-y-8 mt-6">
-              {adviceType === "noCG" ? (
-              <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+            
+              <div className="grid grid-cols-3 gap-x-6 gap-y-3">
+
                 <label className={labelClassName}>
                   What kind of advice do you think your partner received?
                 </label>
 
-                <label className={labelClassName}>
-                  Do you have any feedback, including problems you encountered? (optional)
-                </label>
-
                 <textarea
                   className={inputClassName}
                   dir="auto"
-                  id="partnerAdvice"
-                  name="partnerAdvice"
+                  id="strength"
+                  name="strength"
                   rows={4}
-                  value={partnerAdvice}
-                  onChange={(e) => setPartnerAdvice(e.target.value)}
+                  value={strength}
+                  onChange={(e) => setStrength(e.target.value)}
                 />
-                <textarea
-                  className={inputClassName}
-                  dir="auto"
-                  id="feedback"
-                  name="feedback"
-                  rows={4}
-                  value={feedback}
-                  onChange={(e) => setFeedback(e.target.value)}
-                />
-              </div>
-              ) : (
-              <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-                <label className={labelClassName}>
-                  Do you feel you and your partner followed the advice well?
-                </label>
-
-                <label className={labelClassName}>
-                  Do you have any feedback, including problems you encountered?
-                </label>
 
                 <textarea
                   className={inputClassName}
                   dir="auto"
-                  id="adviceFollowed"
-                  name="adviceFollowed"
+                  id="fair"
+                  name="fair"
                   rows={4}
-                  value={adviceFollowed}
-                  onChange={(e) => setAdviceFollowed(e.target.value)}
+                  value={fair}
+                  onChange={(e) => setFair(e.target.value)}
                 />
 
                 <textarea
@@ -106,8 +76,7 @@ export function ExitSurvey({ next }) {
                   onChange={(e) => setFeedback(e.target.value)}
                 />
               </div>
-              )}
-              {error && <p className="text-red-500 mt-2">{error}</p>}
+
               <div className="mb-12">
                 <Button type="submit">Submit</Button>
               </div>
@@ -157,5 +126,21 @@ export function ExitSurvey({ next }) {
       </Alert>
       {formContent}  
     </div>
+  );
+}
+
+export function Radio({ selected, name, value, label, onChange }) {
+  return (
+    <label className="text-sm font-medium text-gray-700">
+      <input
+        className="mr-2 shadow-sm sm:text-sm"
+        type="radio"
+        name={name}
+        value={value}
+        checked={selected === value}
+        onChange={onChange}
+      />
+      {label}
+    </label>
   );
 }
