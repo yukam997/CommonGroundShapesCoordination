@@ -16,9 +16,9 @@ player <- player %>% group_by(gameID) %>%
   summarise(
     bonus = sum(bonus),
     writtenPlan = paste(writtenPlan, collapse = " | "),
-    did_you_follow_advice= sapply(strsplit(exitSurvey, '"'), function(x) x[4]),
-    what_was_partner_advice = sapply(strsplit(exitSurvey, '"'), function(x) x[8]),
-    feedback = sapply(strsplit(exitSurvey, '"'), function(x) x[12])
+    did_you_follow_advice= paste(sapply(strsplit(exitSurvey, '"'), function(x) x[4]), collapse = " | "),
+    what_was_partner_advice = paste(sapply(strsplit(exitSurvey, '"'), function(x) x[8]), collapse = " | "),
+    feedback = paste(sapply(strsplit(exitSurvey, '"'), function(x) x[12]), collapse = " | ")
   )
 # rename gameID to game_number
 colnames(player)[1] <- "game_number"
