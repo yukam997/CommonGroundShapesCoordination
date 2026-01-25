@@ -59,9 +59,9 @@ export function Result() {
         </div>
         {round.get("name") % 4 === 0 ? (
             <div className="mt-4">
-            <p className="text-xl mt-4">Your partner's earnings is <strong>{partnerBonus} MU</strong></p>
+            <p className="text-xl mt-4">Your partner earned <strong>{partnerBonus} MU</strong></p>
             <label className="block text-sm" htmlFor="myGain">
-              How many (MU) did you receive on this round?
+              How many MUs did you earn in this round?
               <input
                 id="myGain"
                 name="myGain"
@@ -76,15 +76,9 @@ export function Result() {
 
             {submitted && (
               <div className="mt-2 p-3 bg-blue-50 rounded">
-                <p className="text-sm">
-                  <span className="font-semibold">Your entered:</span> {myGain} MU
-                </p>
-                <p className="text-sm">
-                  <span className="font-semibold">Actual earnings:</span> {playerBonus} MU
-                </p>
                 {parseInt(myGain) !== playerBonus && (
                   <p className="text-red-600 text-sm mt-1">
-                    ⚠️ Your answer was incorrect. The actual earnings was {playerBonus} MU.
+                    Incorrect! You earned <strong>{playerBonus} MU</strong>.
                   </p>
                 )}
                 {parseInt(myGain) === playerBonus && (
@@ -106,7 +100,7 @@ export function Result() {
           </div>
           ) : (
           <div>
-            <p className="text-xl mt-4">Your earned <strong>{playerBonus} MU</strong></p>
+            <p className="text-xl mt-4">You earned <strong>{playerBonus} MU</strong></p>
             <Button handleClick={() => handleNext()}>
               Next
             </Button>
