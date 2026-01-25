@@ -8,11 +8,14 @@ export function Result() {
   const players = usePlayers();
   const partner = players.filter((p) => p.id !== player.id)[0];
   const myGain = player.stage.get("myGain") || "";
-  const actualGain = player.round.get("bonus")
+  const playerBonus = player.round.get("bonus");
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(3);
   const round = useRound();
+  const playerDecision = player.round.get("decision");
+  const partnerDecision = partner.round.get("decision");
+  const partnerBonus = partner.round.get("bonus");
   useEffect(() => {
   if (submitted) {
     const timer = setInterval(() => {
@@ -39,7 +42,7 @@ export function Result() {
     setError('');
     setSubmitted(true);
     setTimeRemaining(3);
-    player.stage.set("costCorrect", parseInt(myGain) === actualGain);
+    player.stage.set("costCorrect", parseInt(myGain) === playerBonus);
   }
 
   function handleNext() {
@@ -51,14 +54,14 @@ export function Result() {
       <div className="text-center space-y-4">
         <ParkingDiagram />
         <div className="space-y-2">
-          <p className="text-lg">You chose: <strong>{player.round.get("decision")}</strong></p>
-          <p className="text-lg">Your partner chose: <strong>{partner.round.get("decision")}</strong></p>
+          <p className="text-lg">You chose: <strong>{playerDecision}</strong></p>
+          <p className="text-lg">Your partner chose: <strong>{partnerDecision}</strong></p>
         </div>
         {round.get("name") % 4 === 0 ? (
             <div className="mt-4">
-            <p className="text-xl mt-4">Your partner's earnings is <strong>{partner.round.get("bonus")} MU</strong></p>
+            <p className="text-xl mt-4">Your partner's earnings is <strong>{partnerBonus} MU</strong></p>
             <label className="block text-sm" htmlFor="myGain">
-              What was the earnings (MU) you received for this round?
+              How many (MU) did you receive on this round?
               <input
                 id="myGain"
                 name="myGain"
@@ -77,14 +80,14 @@ export function Result() {
                   <span className="font-semibold">Your entered:</span> {myGain} MU
                 </p>
                 <p className="text-sm">
-                  <span className="font-semibold">Actual earnings:</span> {actualGain} MU
+                  <span className="font-semibold">Actual earnings:</span> {playerBonus} MU
                 </p>
-                {parseInt(myGain) !== actualGain && (
+                {parseInt(myGain) !== playerBonus && (
                   <p className="text-red-600 text-sm mt-1">
-                    ⚠️ Your answer was incorrect. The actual earnings was {actualGain} MU.
+                    ⚠️ Your answer was incorrect. The actual earnings was {playerBonus} MU.
                   </p>
                 )}
-                {parseInt(myGain) === actualGain && (
+                {parseInt(myGain) === playerBonus && (
                   <p className="text-green-600 text-sm mt-1">
                     ✓ Correct!
                   </p>
@@ -103,7 +106,7 @@ export function Result() {
           </div>
           ) : (
           <div>
-            <p className="text-xl mt-4">Your earned <strong>{player.round.get("bonus")} MU</strong></p>
+            <p className="text-xl mt-4">Your earned <strong>{playerBonus} MU</strong></p>
             <Button handleClick={() => handleNext()}>
               Next
             </Button>
