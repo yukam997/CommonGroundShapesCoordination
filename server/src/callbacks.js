@@ -23,7 +23,6 @@ Empirica.onStageEnded(({ stage }) => {
 
   const players = stage.currentGame.players;
   for (const player of players) {
-    console.log("computing cost for player ", player.id);
     const partner = players.filter((p) => p.id !== player.id)[0];
     const playerChoice = player.round.get("decision");
     const partnerChoice = partner.round.get("decision");
@@ -41,9 +40,7 @@ Empirica.onStageEnded(({ stage }) => {
     let bonus=0;
     if (playerChoice === partnerChoice) {
       bonus = 0;
-      console.log("Both chose the same spot. Collision!");
-      player.round.set("bonus", bonus);
-      continue;
+
     } else {
       if (playerChoice === "A" || playerChoice === "B") {
         bonus = 10;
@@ -55,8 +52,6 @@ Empirica.onStageEnded(({ stage }) => {
         bonus = 7;
       }
     }
-
-
     if ((playerChoice === "A" && partnerChoice === "B")||(playerChoice === "B" && partnerChoice === "A")||
         (playerChoice === "C" && partnerChoice === "D")||(playerChoice === "D" && partnerChoice === "C")) {
       bonus += 10;
