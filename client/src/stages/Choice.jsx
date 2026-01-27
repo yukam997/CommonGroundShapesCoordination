@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "../components/Button";
 import { usePlayer } from "@empirica/core/player/classic/react";
-import parkingImg from "../components/payoffs.png";
 import { ParkingDiagram } from "../intro-exit/Introduction2.jsx";  
 export function Choice() {
   const player = usePlayer();
@@ -9,7 +8,6 @@ export function Choice() {
   function onClick(choice) {
     console.log("Player", player.id, "chose", choice,"and submitted");
     player.round.set("decision", choice);
-    player.stage.set("submit", true);
   }
 
   return (

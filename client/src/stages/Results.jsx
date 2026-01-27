@@ -22,7 +22,7 @@ export function Result() {
       setTimeRemaining(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          player.stage.set("submit", true);
+          player.stage.set("requestNext", true);
           return 0;
         }
         return prev - 1;
@@ -46,7 +46,7 @@ export function Result() {
   }
 
   function handleNext() {
-    player.stage.set("submit", true);
+    player.stage.set("requestNext", true);
   }
 
   return (
