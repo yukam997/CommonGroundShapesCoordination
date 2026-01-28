@@ -53,10 +53,12 @@ strategy_count_df <- data.frame(
   treatmentName = character(),
   stringsAsFactors = FALSE
 )
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+setwd(file.path(dirname(rstudioapi::getActiveDocumentContext()$path), 
+                "data_from_jan27_full"))# concatenate data diretory with file names
 # create dict mapping treatment name to list of game IDs where treatment name is unique(game$treatmentName)
-game<- read.csv("./combined_game.csv")
-playerRound_df <- read.csv("./combined_playerRound.csv")
+game<- read.csv("games_for_analysis.csv")
+playerRound_df <- read.csv("combined_playerRound.csv")
+playerRound_df <- playerRound_df %>% filter(gameID %in% game$id)
 playerRound_df <- playerRound_df %>%
   arrange(gameID, playerID, decisionLastChangedAt) %>%  # Sort by multiple columns
   select(decision, gameID, playerID)
@@ -77,9 +79,9 @@ for (i in seq_len(nrow(game))) {
     treatmentName = treatment_name
   ))
 }
-write.csv(strategy_count_df,"./simplified_experimental_data.csv",row.names = FALSE)
+write.csv(strategy_count_df,"./new_simplified_experimental_data.csv",row.names = FALSE)
 
-experimental_d <- read.csv("./simplified_experimental_data.csv")
+experimental_d <- read.csv("./new_simplified_experimental_data.csv")
 View(experimental_d)
 # for each strategy, sum up the counts
 for (tName in unique(game$treatmentName)) {
@@ -95,5 +97,5 @@ for (tName in unique(game$treatmentName)) {
     theme_minimal() + 
     scale_x_discrete(limits = c("stable_orange", "stable_purple", "alt_purple", "both_stable", "one_stable","other"),
                     labels = c("stable\norange", "stable\npurple", "alt\npurple", "both\nstable", "one\nstable","other"))
-  ggsave( paste0("./strategy_type_", tName, ".png"), plot = p_experimental, width = 6, height = 4, dpi = 300)
+  ggsave( paste0("./new_strategy_type_", tName, ".png"), plot = p_experimental, width = 6, height = 4, dpi = 300)
 }

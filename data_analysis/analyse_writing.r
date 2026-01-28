@@ -1,7 +1,7 @@
 library(dplyr)
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-player <- read.csv("./combined_player.csv")
-game <- read.csv("./combined_game.csv")
+player <- read.csv("../current_replication/player.csv")
+game <- read.csv("../current_replication/game.csv")
 experimental_d <- read.csv("./simplified_experimental_data.csv")
 player <- player %>% select(id,gameID, bonus,writtenPlan,exitSurvey)
 # sum bonus with same gameID,and concat writtenPlan
