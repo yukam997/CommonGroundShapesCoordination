@@ -161,7 +161,8 @@ game_round_before <- game_round%>%mutate(
   prev_p1_choice = p1_choice,
   prev_p2_choice=p2_choice,
 )
-game_round %>% left_join(game_round_before%>%select(gameID,round_before,prev_p1_choice,prev_p2_choice), by = c('gameID','round'='round_before'))
+game_round <-game_round %>% left_join(game_round_before%>%select(gameID,round_before,prev_p1_choice,prev_p2_choice), by = c('gameID','round'='round_before'))
+
 cat("Round-level observations:", nrow(game_round), "\n")
 ```
 
@@ -227,6 +228,23 @@ kable(summary(m_fair)$coefficients, digits = 3,
 ```
 
 3-way interaction (p = 0.004): CG + Selfish becomes increasingly unfair over time.
+
+### Model 3: Counting number of times C and D are swapped
+```{r model-alt-purple}
+game_round <- game_round%>%
+  rowwise%>%
+  mutate(
+  alt_purple = ifelse((C==1)&&(D==1)&&(prev_p1_choice==p2_choice)&&(prev_p2_choice==p1_choice),1,0)
+)
+alt_model<-lm(alt_purple ~isCG*isCooperate,data=game_round)
+alt_model_simple<-lm(alt_purple ~isCG+isCooperate,data=game_round)
+anova(alt_model,alt_model_simple)
+kable(summary(alt_model_simple)$coefficients, digits = 3,
+      caption = "Alt Purple (lm(alt_purple ~isCG+isCooperate,data=game_round))")
+kable(summary(alt_model)$coefficients, digits = 3,
+      caption = "Alt Purple (lm(alt_purple ~isCG*isCooperate,data=game_round))")
+```
+
 
 ## Viz
 
