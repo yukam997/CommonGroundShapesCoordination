@@ -40,6 +40,7 @@ All codes for cogsci 2026 Common Ground Affects Coordination paper:
 player <- read.csv(here("data_analysis/data_from_jan27_full/combined_player.csv"))
 playerRound <- read.csv(here("data_analysis/data_from_jan27_full/combined_playerRound.csv"))
 games_for_analysis <- read.csv(here("data_analysis/data_from_jan27_full/games_for_analysis.csv"))
+strategies <- read.csv(here("data_analysis/data_from_jan27_full/classified_strategies.csv"))
 
 # Get treatment info and filter to analyzed games (passed attention checks)
 treatment_info <- player %>% select(gameID, treatmentName) %>% distinct()
@@ -102,7 +103,6 @@ game_round <- playerRound_proc %>%
     coordinated = 1 - collision,
     round_bonus = p1_bonus + p2_bonus,
     bonus_diff = abs(p1_bonus - p2_bonus),
-    cum_bonus_diff = abs(p1_cum_bonus-p2_cum_bonus),
     CG = ifelse(isCG == 1, "Common Ground", "No Common Ground"),
     Advice = ifelse(isCooperate == 1, "Cooperative", "Selfish"),
     A = (p1_choice == "A") + (p2_choice == "A"),
@@ -120,110 +120,103 @@ game_round <-game_round %>% left_join(game_round_before%>%select(gameID,round_be
 cat("Round-level observations:", nrow(game_round), "\n")
 ```
 
-### Game-level Analysis
+### Low-resolution Analysis
 ```{r}
-#  CG condition coordinated better (currently significance is weak)
-bonus_model_base <- lm(bonus ~  1,game_level)
-bonus_model <- lm(bonus ~ isCG,game_level)
-anova(bonus_model,bonus_model_base)
+#  CG condition coordinated better
+bonus_model <- lm(bonus ~  isCG+isCooperate,game_level)
+summary(bonus_model)
+
+# No difference in fairness
+dif_bonus_model <- lm(dif_bonus ~ isCG+isCooperate,game_level)
+summary(dif_bonus_model)
 
 # There were no significant collision differences across conditions
-C_model <- lm(collision ~ 1,game_round%>%group_by(gameID)%>%summarize(collision=sum(collision),isCooperate=isCooperate[1]))
-C_model_interact <- lm(collision~ isCooperate,game_round%>%group_by(gameID)%>%summarize(collision=sum(collision),isCooperate=isCooperate[1]))
-anova(C_model,C_model_interact)
+collision_model <- glmer(collision ~isCG+isCooperate + (1|gameID),game_round,family = binomial)
+summary(collision_model)
 
-# But Participants in selfish condition chose C more (weak significance)
-C_model <- lm(C ~ 1,playerRound_proc%>%group_by(gameID)%>%summarize(C=sum(C)))
-C_model_interact <- lm(C ~ isCooperate,playerRound_proc%>%group_by(gameID)%>%summarize(C=sum(C),isCooperate=isCooperate[1]))
-anova(C_model,C_model_interact)
+# But Participants in selfish condition chose C more
+C_model <- glmer(C ~ isCG+isCooperate+round + (1|playerID),data=playerRound_proc,family = binomial)
+summary(C_model)$coefficients
+
+# This effect was particularly strong in the earlier rounds when participants were establishing norms
+C_model_start <- glmer(C ~ isCG+isCooperate+(1|playerID),data=playerRound_proc%>%filter(round<3),family = binomial)
+summary(C_model_start)$coefficients
 ```
-### Round-Level Analysis
-
-Now we examine dynamics over the course of the 13 rounds.
-
-```{r example-trace}
-# 01KG0H3X9S8ZR8HTJY0HSJCWW9
-
-```
+report p,(z or t),beta for each of them
 
 ```{r reported-stats}
 # Participants' coordination improved as rounds progressed
 round_model_null<- lmer(round_bonus ~ 1+ (1|gameID),game_round)
 round_model <- lmer(round_bonus ~ round + (1|gameID),game_round)
-anova(round_model,round_model_null)
+summary(round_model)$coefficients
 ```
+report  beta, t and p
 
-#### Analyzing round-level bonus differences
+### CG+Selfish converged to a different norm
 ```{r round-level-bonus, fig.width=10, fig.height=5, message=FALSE}
-m_round_dif <- lmer(bonus_diff ~ isCG * isCooperate * scale(round) + (1 | gameID),
+m_round_dif <- lmer(bonus_diff ~ isCG * isCooperate * scale(round) + (1+scale(round) | gameID),
                data = game_round)
 
 kable(summary(m_round_dif)$coefficients, digits = 3,
       caption = "round-level dif model (linear mixed effects)")
+
 ggplot(game_round, aes(x = round, y = bonus_diff, color = Advice, fill = Advice)) +
   geom_smooth(method = "lm", alpha = 0.2) +
   facet_wrap(~CG) +
+  # Top label - only on first facet
+  annotate("text", x = 0, y = Inf, label = "Asymmetric Equilibrium", 
+           hjust = 0, vjust = 1.5, size = 3.5, fontface = "italic", color = "gray30") +
+  # Bottom label - only on first facet
+  annotate("text", x = 0, y = -Inf, label = "Symmetric Equilibrium", 
+           hjust = 0, vjust = -0.5, size = 3.5, fontface = "italic", color = "gray30") +
   scale_x_continuous(breaks = seq(0, 12, 2)) +
   scale_color_manual(values = c("Cooperative" = "#2E86AB", "Selfish" = "#A23B72")) +
   scale_fill_manual(values = c("Cooperative" = "#2E86AB", "Selfish" = "#A23B72")) +
   labs(x = "Round", y = "Bonus Difference Between Partners",
-       title = "Fairness Over Time",
+       title = "Payoff Difference Over Time",
        subtitle = "Lower = more equal outcomes (linear fit with 95% CI)") +
-  theme(legend.position = "bottom", strip.text = element_text(face = "bold"))
+  theme(legend.position = c(0.9, 0.9), strip.text = element_text(face = "bold"))
 ```
-Round level, diff, but this doesn't translate to cumulative diff:
+Stats to report: p=0.03, t=-2.17, beta=-1.12
 
-#### Analyzing cumulative bonus differences
-```{r cumulative-bonus}
-m_fair <- lmer(cum_bonus_diff ~ isCG * isCooperate * scale(round) + (1 | gameID),
-               data = game_round)
-
-kable(summary(m_fair)$coefficients, digits = 3,
-      caption = "Fairness model (linear mixed effects)")
-
-ggplot(game_round, aes(x = round, y = cum_bonus_diff, color = Advice, fill = Advice))+
-  geom_smooth(method = "lm", alpha = 0.2) +
-  facet_wrap(~CG) +
-  scale_x_continuous(breaks = seq(0, 12, 2)) +
-  scale_color_manual(values = c("Cooperative" = "#2E86AB", "Selfish" = "#A23B72")) +
-  scale_fill_manual(values = c("Cooperative" = "#2E86AB", "Selfish" = "#A23B72")) +
-  labs(x = "Round", y = "Total Bonus Difference Between Partners",
-       title = "Cumulative Bonus Difference",
-       subtitle = "Lower = more equal outcomes (linear fit with 95% CI)") +
-  theme(legend.position = "bottom", strip.text = element_text(face = "bold"))
-
-
-```
-(CG doesn't have any effect on fairness!)
-
-so people must be compensating across rounds by swappinng - but swaps are too few frequency to get significant results:
-#### Analyzing swaps (Need Edits!)
+Confirm finding from rond-level difference by looking at frequency of strategies in classification
+### Alt purple
 ```{r model-alt-purple}
-library(lmerTest)
-game_round <- game_round%>%
-  rowwise()%>%
-  mutate(
-  alt_purple = ifelse((C==1)&(D==1)&(prev_p1_choice==p2_choice)&(prev_p2_choice==p1_choice),1,0)
-)
-summary_group <- game_round[game_round$round>8,]%>%group_by(CG,Advice)%>%summarize(alt_purple=mean(alt_purple),.groups = "drop")
-kable(summary_group,caption = "Difference in alt strategy across conditions")
+strategies <- read.csv(here("data_analysis/data_from_jan27_full/classified_strategies.csv"))
+strats <- setdiff(colnames(strategies), c("treatmentName", "game_number"))
+strategies <- strategies %>%
+  mutate(across(all_of(strats), ~ as.numeric(.) * 4))
+strategies$CG <- sub("_.*", "", strategies$treatmentName)
+strategies$Advice <- sub(".*_", "", strategies$treatmentName)
+model <- glm(cbind(alt_purple, 4 - alt_purple) ~ Advice * CG,
+             data = strategies,
+             family = binomial)
 
-alt_model<-glmer(alt_purple ~isCG*isCooperate + (1|gameID),data=game_round[game_round$round>5,],family = binomial)
-kable(summary(alt_model)$coefficients, digits = 3,
-      caption = "Effects of Condition on alt strategy in later rounds (6-12) - very sensitive to round numbers so not trustworthy")
-
-ggplot(game_round%>%filter(round>0), aes(x = round, y = alt_purple, color = Advice, fill = Advice)) +
-  stat_summary(fun = mean, geom = "point", size = 2) +  # Add this
-  geom_smooth(method = "lm", span = 0.75, alpha = 0.2) +
-  facet_wrap(~CG) +
-  scale_x_continuous(breaks = seq(1, 12, 2)) +
-  scale_color_manual(values = c("Cooperative" = "#2E86AB", "Selfish" = "#A23B72")) +
-  scale_fill_manual(values = c("Cooperative" = "#2E86AB", "Selfish" = "#A23B72")) +
-  labs(x = "Round", y = "Pair Bonus",
-       title = "Frequency of swaps overtime",
-       subtitle = "Loess smoothing with 95% CI") +
-  theme(legend.position = "bottom", strip.text = element_text(face = "bold"))
+pairs(emmeans(model,~ Advice * CG))
+summary(model)
+strategies%>%group_by(treatmentName)%>%summarise(alt_purple=mean(alt_purple)/4)
 ```
+stats to report: 8% of last 4 rounds were alt_strategy in CG_selfish, but others were below 1.5%
+stats to report: Adviceselfish has a coefficient of 1.86 (z=-0.012, p=.016) which is significanly different from 0 (I'm not sure how to interpret this to say this explains how only CG+Selfish condition went up in round level difference)
+
+
+### purple equilibrium vs orange equilibrium
+```{r which-equilibrium}
+model <- glm(cbind(alt_purple+stable_purple, 4 - stable_purple-alt_purple) ~ Advice * CG,
+             data = strategies,
+             family = binomial)
+
+pairs(emmeans(model,~ Advice * CG))
+summary(model)
+model <- glm(cbind(stable_orange, 4 - stable_orange) ~ Advice * CG,
+             data = strategies,
+             family = binomial)
+
+pairs(emmeans(model,~ Advice * CG))
+summary(model)
+```
+Advice and CG both had effect on the type of strategy
+For stable_orange, both CG, advice type, and interaction was all significant (reprot betha, z, and p values), and for strategies converging on the purple equilibrium, advice type was significant.
 
 ## Analyse "We" in written responses
 
