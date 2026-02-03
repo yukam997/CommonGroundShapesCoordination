@@ -59,7 +59,6 @@ cat("Total games:", length(unique(player_filtered$gameID)), "\n")
 ## Analyze Actions across contexts
 ### Format data
 ```{r format-data}
-player_filtered
 game_level <- player_filtered %>%
   group_by(gameID, treatmentName, isCG, isCooperate) %>%
   summarize(dif_bonus = abs(diff(bonus)),bonus = mean(bonus), .groups = "drop")
@@ -137,9 +136,9 @@ summary(collision_model)
 # But Participants in selfish condition chose C more
 C_model <- glmer(C ~ isCG+isCooperate+round + (1|playerID),data=playerRound_proc,family = binomial)
 summary(C_model)$coefficients
-
+playerRound_proc<-playerRound_proc%>%mutate(early_round = round<)
 # This effect was particularly strong in the earlier rounds when participants were establishing norms
-C_model_start <- glmer(C ~ isCG+isCooperate+(1|playerID),data=playerRound_proc%>%filter(round<3),family = binomial)
+C_model_start <- glmer(C ~ isCG*early_round+isCooperate*early_round+(1|playerID),data=playerRound_proc,family = binomial)
 summary(C_model_start)$coefficients
 ```
 report p,(z or t),beta for each of them
@@ -164,17 +163,15 @@ ggplot(game_round, aes(x = round, y = bonus_diff, color = Advice, fill = Advice)
   geom_smooth(method = "lm", alpha = 0.2) +
   facet_wrap(~CG) +
   # Top label - only on first facet
-  annotate("text", x = 0, y = Inf, label = "Asymmetric Equilibrium", 
+  annotate("text", x = 0, y = Inf, label = "More Asymmetric", 
            hjust = 0, vjust = 1.5, size = 3.5, fontface = "italic", color = "gray30") +
   # Bottom label - only on first facet
-  annotate("text", x = 0, y = -Inf, label = "Symmetric Equilibrium", 
+  annotate("text", x = 0, y = -Inf, label = "More Symmetric", 
            hjust = 0, vjust = -0.5, size = 3.5, fontface = "italic", color = "gray30") +
   scale_x_continuous(breaks = seq(0, 12, 2)) +
-  scale_color_manual(values = c("Cooperative" = "#2E86AB", "Selfish" = "#A23B72")) +
-  scale_fill_manual(values = c("Cooperative" = "#2E86AB", "Selfish" = "#A23B72")) +
-  labs(x = "Round", y = "Bonus Difference Between Partners",
-       title = "Payoff Difference Over Time",
-       subtitle = "Lower = more equal outcomes (linear fit with 95% CI)") +
+  scale_color_manual(values = c("Cooperative" = "#4CAF50", "Selfish" = "#D32F2F")) +
+  scale_fill_manual(values = c("Cooperative" = "#4CAF50", "Selfish" = "#D32F2F")) +
+  labs(x = "Round Number", y = "Payoff Difference Between Partners") +theme_minimal()+
   theme(legend.position = c(0.9, 0.9), strip.text = element_text(face = "bold"))
 ```
 Stats to report: p=0.03, t=-2.17, beta=-1.12
@@ -192,7 +189,7 @@ model <- glm(cbind(alt_purple, 4 - alt_purple) ~ Advice * CG,
              data = strategies,
              family = binomial)
 
-pairs(emmeans(model,~ Advice * CG))
+pairs(emmeans(model,~ Advice*CG))
 summary(model)
 strategies%>%group_by(treatmentName)%>%summarise(alt_purple=mean(alt_purple)/4)
 ```
@@ -214,6 +211,12 @@ model <- glm(cbind(stable_orange, 4 - stable_orange) ~ Advice * CG,
 
 pairs(emmeans(model,~ Advice * CG))
 summary(model)
+model <- glm(cbind(other, 4 - other) ~ Advice * CG,
+             data = strategies,
+             family = binomial)
+
+pairs(emmeans(model,~ Advice * CG))
+summary(model)
 ```
 Advice and CG both had effect on the type of strategy
 For stable_orange, both CG, advice type, and interaction was all significant (reprot betha, z, and p values), and for strategies converging on the purple equilibrium, advice type was significant.
@@ -225,53 +228,68 @@ For stable_orange, both CG, advice type, and interaction was all significant (re
 player_writing <- player_filtered %>%
   rowwise() %>%
   summarise(
-    CG = fromJSON(treatment)$adviceType, 
-    Cooperate = fromJSON(treatment)$advice,
+    isCG = fromJSON(treatment)$adviceType=="CG", 
+    isCooperate = fromJSON(treatment)$advice!="Try to get the best outcome for yourself.",
     adviceFollowed = fromJSON(exitSurvey)$adviceFollowed,
     partnerAdvice = fromJSON(exitSurvey)$partnerAdvice,
     writtenPlan = fromJSON(writtenPlan)$plan,
-    we_used = str_count(tolower(adviceFollowed), "we\\b"),
+    we_used = str_count(tolower(adviceFollowed), "\\bwe\\b"),
     I_used = str_count(tolower(adviceFollowed), "\\bi\\b"),
-    we_at_start = str_count(tolower(writtenPlan), "we\\b"),
+    we_at_start = str_count(tolower(writtenPlan), "\\bwe\\b"),
     bonus = bonus,
     gameID = gameID
   )
 games_writing <- player_writing%>%group_by(gameID) %>%
-  summarize(dif_bonus = abs(bonus[1]-bonus[2]), we_used = we_used[1]+we_used[2], we_at_start = we_at_start[1]+we_at_start[2], I_used = sum(I_used),Cooperate = Cooperate[1],CG=CG[1])
+  summarize(tot_bonus = sum(bonus),dif_bonus = abs(bonus[1]-bonus[2]), we_used = we_used[1]+we_used[2], we_at_start = we_at_start[1]+we_at_start[2], I_used = sum(I_used),isCooperate = isCooperate[1],isCG=isCG[1])
 ```
 
 ### uses of we in written plan
 ```{r we-at-start-analyses}
 # Q. does advice type change the way we think about the game? Does it matter whether the advice is in common ground?
-advice_on_perception <- lm(we_at_start ~ Cooperate*CG, data = games_writing)
-summary(advice_on_perception)
+advice_on_perception_inter <- glm(we_at_start ~ isCooperate*, data = games_writing,family=poisson)
+anova(advice_on_perception_inter,advice_on_perception)
+summary(advice_on_perception_inter)
 kable(games_writing%>%group_by(Cooperate,CG)%>%summarise(we_at_start=mean(we_at_start)))
 # A. Advice type does , but CG is very weak (p = approx. 0.2).
 
 # Q. does our initial perception predict fairness in the game?
-perception_on_fairness <- lm(dif_bonus ~ we_at_start*CG, data = games_writing)
+perception_on_fairness <- lm(dif_bonus ~ we_at_start, data = games_writing)
 summary(perception_on_fairness)
 # A. weakly (p=0.126). And there is some interaction between we at start and CG - we at start affects fairness if advice is in common ground bur not if not in common ground.
 ```
 
 ### uses of we in reflection (only CG condition)
 ```{r we-at-end-analyses}
+model_base <- lm(dif_bonus ~ we_at_start, data =cg_writing)
+summary(glm(we_at_start ~ isCooperate, data =cg_writing,family=poisson))
+
+summary(glm(we_used ~ isCooperate, data =cg_writing,family=poisson))
 # Q. Does fairness affect joint intention (perception of coordination in the game)
-cg_writing <- games_writing%>%filter(CG=="CG")
-model <- lm(dif_bonus ~ we_used, data =cg_writing)
-summary(model)
+cg_writing <- games_writing%>%filter(isCG)
+model <- lm(dif_bonus ~ we_used+isCooperate, data =cg_writing)
+model_base <- lm(dif_bonus ~ we_used, data =cg_writing)
+anova(model_base,model)
+summary(model_base)
 # A. yes. p=0.02 (I guess this is the opposite, not we_used ~ dif_bonus)
-ggplot(cg_writing, aes(x = we_used, y = dif_bonus)) +
+summary(glm(we_used~dif_bonus,data=cg_writing,family=poisson))
+summary(glm(we_used~dif_bonus+isCooperate,data=cg_writing,family=poisson))
+summary(glm(we_used~dif_bonus+isCooperate,data=cg_writing,family=poisson))
+ggplot(cg_writing, aes(x = dif_bonus, y = we_used)) +
   geom_jitter(width = 0.05, height = 0, alpha = 0.6, size = 2)+
   geom_smooth(method = "lm",alpha=0.2, color = "blue", fill = "lightblue") +
   labs(title = "Relationship between 'We' Usage in reflection, and Bonus Difference",
-       x = "Number of 'We' Used",
-       y = "Bonus Difference") +
+       y = "Number of 'We' Used",
+       x = "Bonus Difference") +
   theme_minimal()
 ```
 
 ```{r I-at-end-analyses}
-model <- lm(dif_bonus ~ I_used, data =cg_writing)
+model <- lm(dif_bonus ~ I_used+isCooperate, data =cg_writing)
+model_indep <- lm(dif_bonus ~ I_used, data =cg_writing)
+colnames(cg_writing)
+anova(model,model_indep)
+cor_result <- cor.test(cg_writing$we_used, cg_writing$I_used)
+print(cor_result)
 summary(model)
 # A. yes. p=0.02 (I guess this is the opposite, not we_used ~ dif_bonus)
 ggplot(cg_writing, aes(x = I_used, y = dif_bonus)) +
@@ -281,4 +299,44 @@ ggplot(cg_writing, aes(x = I_used, y = dif_bonus)) +
        x = "Number of 'I' Used",
        y = "Bonus Difference") +
   theme_minimal()
+```
+
+
+
+
+
+
+```{r}
+library(ggplot2)
+library(patchwork)  # or use gridExtra
+
+# Create a list to store plots
+plot_list <- list()
+experimental_d <- read.csv(here("data_analysis/data_from_jan27_full/classified_strategies.csv"))
+for (tName in unique(experimental_d$treatmentName)) {
+  experimental_d_sub <- experimental_d[experimental_d$treatmentName == tName, ]
+  count = c(sum(experimental_d_sub$stable_orange), sum(experimental_d_sub$stable_purple), 
+              sum(experimental_d_sub$alt_purple), sum(experimental_d_sub$both_stable),
+              sum(experimental_d_sub$other))
+  total <- sum(count)
+  frequencies <- count / total
+  strategy_counts_exp <- data.frame(
+    strategy = c("stable_orange", "stable_purple", "alt_purple", "both_stable","other"),
+    frequency = frequencies,
+    treatmentName = tName
+  )
+  
+  p_experimental <- ggplot(strategy_counts_exp, aes(x=strategy, y=frequency)) + 
+    geom_col(fill = ifelse(grepl("selfish", tName, ignore.case = TRUE), "#D32F2F", "#4CAF50")) +
+    labs(x = NULL,y=NULL,title = gsub("_", " + ", tName)) + 
+    theme_classic() + 
+    scale_x_discrete(limits = c("stable_orange", "stable_purple", "alt_purple", "both_stable","other"),
+                     labels = c("stable\norange", "stable\npurple", "alt\npurple", "other\nnorme","no\nnorm")) +
+    scale_y_continuous(limits = c(0, 0.65))
+  plot_list[[tName]] <- p_experimental
+}
+
+# Combine into 2x2 grid using patchwork
+combined_plot <- (plot_list[[1]] | plot_list[[2]]) / (plot_list[[4]] | plot_list[[3]])
+combined_plot
 ```
