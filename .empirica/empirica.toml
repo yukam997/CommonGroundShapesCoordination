@@ -1,9 +1,0 @@
-name = "Yu2024_replication"
-
-[tajriba.auth]
-srtoken = "ObnqRKGFTscwxNMl"
-
-[[tajriba.auth.users]]
-name = "Admin"
-username = "admin"
-password = "pmRSMSoT"

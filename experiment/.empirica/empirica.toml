@@ -1,0 +1,9 @@
+name = "common_ground_coordination"
+
+[tajriba.auth]
+srtoken = "changeme"
+
+[[tajriba.auth.users]]
+name = "Admin"
+username = "admin"
+password = "changeme"

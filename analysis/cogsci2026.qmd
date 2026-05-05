@@ -14,11 +14,12 @@ format:
 ```{r setup, message=FALSE, warning=FALSE}
 library(dplyr)
 library(ggplot2)
+library(ggthemes)
 library(lme4)
 library(emmeans)
 library(knitr)
 library(here)
-library(brms)
+# library(brms)  # not used in current analyses
 library(jsonlite)
 library(stringr)
 library(lmerTest)
@@ -36,17 +37,99 @@ This analysis contains all code for producing graphs and stats in the Cogsci 202
 All codes for cogsci 2026 Common Ground Affects Coordination paper:
 
 ```{r load-data, message=FALSE}
-# Load data
-player <- read.csv(here("data_analysis/data_from_jan27_full/combined_player.csv"))
-playerRound <- read.csv(here("data_analysis/data_from_jan27_full/combined_playerRound.csv"))
-games_for_analysis <- read.csv(here("data_analysis/data_from_jan27_full/games_for_analysis.csv"))
-strategies <- read.csv(here("data_analysis/data_from_jan27_full/classified_strategies.csv"))
+# Load raw data
+player <- read.csv(here("data/combined_player.csv"))
+playerRound <- read.csv(here("data/combined_playerRound.csv"))
+playerStage <- read.csv(here("data/combined_playerStage.csv"))
+game <- read.csv(here("data/combined_game.csv"))
+```
 
-# Get treatment info and filter to analyzed games (passed attention checks)
+### Attention-check filter
+
+Each player saw an attention-check question every 4 rounds asking them to recall
+the bonus they earned in the previous round. The Empirica server scored each
+response (`costCorrect` field). A player passes if they answered more than one
+attention check correctly; a game is included in analysis if both players in
+the pair passed.
+
+```{r attention-check}
+attentive_players <- playerStage %>%
+  filter(costCorrect %in% c("true", "false")) %>%
+  group_by(playerID) %>%
+  summarize(passed = sum(costCorrect == "true") > 1, .groups = "drop") %>%
+  filter(passed) %>% pull(playerID)
+
+games_for_analysis <- player %>%
+  group_by(gameID) %>%
+  summarize(both_passed = all(id %in% attentive_players), .groups = "drop") %>%
+  filter(both_passed) %>% pull(gameID)
+
+cat("Games passing attention check:", length(games_for_analysis), "\n")
+```
+
+### Strategy classification
+
+Following Yu & Thompson (2024), each pair's strategy in the last 4 rounds is
+classified into `stable_orange` (both fix on (A,B)), `stable_purple` (both fix
+on (C,D)), `alt_purple` (alternating between (C,D) and (D,C)), `both_stable`
+(each player picks the same color repeatedly but not coordinated as orange/purple),
+or `other` (no recognizable norm).
+
+```{r classify-strategy}
+n_rounds <- 13
+
+classify_strategy <- function(pair_choice_seq) {
+  strat <- c(stable_orange = 0, alt_purple = 0, stable_purple = 0, both_stable = 0)
+  for (i in (n_rounds - 4):(n_rounds - 1)) {
+    p1 <- pair_choice_seq[i];               p2 <- pair_choice_seq[i + n_rounds]
+    next_p1 <- pair_choice_seq[i + 1];      next_p2 <- pair_choice_seq[i + n_rounds + 1]
+    if (setequal(unique(c(p1, p2, next_p1, next_p2)), c("C", "D"))) {
+      if (p1 == next_p1 & p2 == next_p2)      strat["stable_purple"] <- strat["stable_purple"] + 0.25
+      else if (p1 == next_p2 & p2 == next_p1) strat["alt_purple"]    <- strat["alt_purple"]    + 0.25
+    } else if (setequal(unique(c(p1, p2, next_p1, next_p2)), c("A", "B"))) {
+      if (p1 == next_p1 & p2 == next_p2)      strat["stable_orange"] <- strat["stable_orange"] + 0.25
+    }
+  }
+  if (sum(strat[c("stable_orange", "stable_purple", "alt_purple")]) == 0) {
+    p1_seq <- pair_choice_seq[(n_rounds - 4):n_rounds]
+    p2_seq <- pair_choice_seq[(n_rounds - 4 + n_rounds):(2 * n_rounds)]
+    p1_stable <- any(sapply(c("A", "B", "C", "D"), function(x) sum(p1_seq == x) > 3))
+    p2_stable <- any(sapply(c("A", "B", "C", "D"), function(x) sum(p2_seq == x) > 3))
+    if (p1_stable & p2_stable) strat["both_stable"] <- 1
+  }
+  strat
+}
+
+playerRound_sorted <- playerRound %>%
+  filter(gameID %in% games_for_analysis) %>%
+  arrange(gameID, playerID, decisionLastChangedAt) %>%
+  select(decision, gameID, playerID)
+
+game_treatment <- game %>% filter(id %in% games_for_analysis) %>%
+  select(id, treatmentName)
+
+strategies <- do.call(rbind, lapply(seq_len(nrow(game_treatment)), function(i) {
+  gid <- game_treatment$id[i]
+  s <- classify_strategy(playerRound_sorted$decision[playerRound_sorted$gameID == gid])
+  data.frame(
+    game_number   = gid,
+    alt_purple    = unname(s["alt_purple"]),
+    stable_orange = unname(s["stable_orange"]),
+    stable_purple = unname(s["stable_purple"]),
+    both_stable   = unname(s["both_stable"]),
+    other         = 1 - sum(s),
+    treatmentName = game_treatment$treatmentName[i]
+  )
+}))
+```
+
+### Build analysis frames
+
+```{r build-frames}
 treatment_info <- player %>% select(gameID, treatmentName) %>% distinct()
 
 player_filtered <- player %>%
-  filter(gameID %in% games_for_analysis$id) %>%
+  filter(gameID %in% games_for_analysis) %>%
   mutate(
     isCG = as.numeric(grepl("^CG_", treatmentName)),
     isCooperate = as.numeric(grepl("_cooperate$", treatmentName))
@@ -54,7 +137,6 @@ player_filtered <- player %>%
 
 cat("Total players:", nrow(player_filtered), "\n")
 cat("Total games:", length(unique(player_filtered$gameID)), "\n")
-
 ```
 ## Analyze Actions across contexts
 ### Format data
@@ -68,7 +150,7 @@ print(table(game_level$treatmentName))
 # Prepare round-level data
 playerRound_proc <- playerRound %>%
   left_join(treatment_info, by = "gameID") %>%
-  filter(gameID %in% games_for_analysis$id) %>%
+  filter(gameID %in% games_for_analysis) %>%
   arrange(gameID, playerID, decisionLastChangedAt) %>%
   group_by(playerID) %>%
   mutate(round = row_number() - 1) %>%
@@ -136,7 +218,7 @@ summary(collision_model)
 # But Participants in selfish condition chose C more
 C_model <- glmer(C ~ isCG+isCooperate+round + (1|playerID),data=playerRound_proc,family = binomial)
 summary(C_model)$coefficients
-playerRound_proc<-playerRound_proc%>%mutate(early_round = round<)
+playerRound_proc <- playerRound_proc %>% mutate(early_round = round < 3)
 # This effect was particularly strong in the earlier rounds when participants were establishing norms
 C_model_start <- glmer(C ~ isCG*early_round+isCooperate*early_round+(1|playerID),data=playerRound_proc,family = binomial)
 summary(C_model_start)$coefficients
@@ -159,27 +241,44 @@ m_round_dif <- lmer(bonus_diff ~ isCG * isCooperate * scale(round) + (1+scale(ro
 kable(summary(m_round_dif)$coefficients, digits = 3,
       caption = "round-level dif model (linear mixed effects)")
 
-ggplot(game_round, aes(x = round, y = bonus_diff, color = Advice, fill = Advice)) +
-  geom_smooth(method = "lm", alpha = 0.2) +
+# 1-index rounds for display
+game_round <- game_round %>% mutate(round_display = round + 1)
+
+# Compute means per round/condition for overlay
+round_means <- game_round %>%
+  group_by(round_display, CG, Advice) %>%
+  summarize(mean_diff = mean(bonus_diff), .groups = "drop")
+
+p_round_diff <- ggplot(game_round, aes(x = round_display, y = bonus_diff, color = Advice, fill = Advice)) +
+  geom_smooth(method = "lm", alpha = 0.2, linewidth = 1.2) +
+  geom_point(data = round_means, aes(y = mean_diff), size = 2.5) +
   facet_wrap(~CG) +
-  # Top label - only on first facet
-  annotate("text", x = 0, y = Inf, label = "More Asymmetric", 
-           hjust = 0, vjust = 1.5, size = 3.5, fontface = "italic", color = "gray30") +
-  # Bottom label - only on first facet
-  annotate("text", x = 0, y = -Inf, label = "More Symmetric", 
-           hjust = 0, vjust = -0.5, size = 3.5, fontface = "italic", color = "gray30") +
-  scale_x_continuous(breaks = seq(0, 12, 2)) +
+  annotate("text", x = 1, y = Inf, label = "More Asymmetric",
+           hjust = 0, vjust = 1.5, size = 5, fontface = "italic", color = "gray30") +
+  annotate("text", x = 1, y = -Inf, label = "More Symmetric",
+           hjust = 0, vjust = -0.5, size = 5, fontface = "italic", color = "gray30") +
+  scale_x_continuous(breaks = seq(1, 13, 2)) +
   scale_color_manual(values = c("Cooperative" = "#4CAF50", "Selfish" = "#D32F2F")) +
   scale_fill_manual(values = c("Cooperative" = "#4CAF50", "Selfish" = "#D32F2F")) +
-  labs(x = "Round Number", y = "Payoff Difference Between Partners") +theme_minimal()+
-  theme(legend.position = c(0.9, 0.9), strip.text = element_text(face = "bold"))
+  labs(x = "Round Number", y = "Payoff Difference Between Partners") +
+  ggthemes::theme_few(base_size = 16) +
+  theme(
+    legend.position = c(0.9, 0.85),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 14),
+    strip.text = element_text(face = "bold", size = 14),
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12)
+  )
+p_round_diff
+ggsave("round_bonus_diff.pdf", p_round_diff, width = 10, height = 5)
 ```
 Stats to report: p=0.03, t=-2.17, beta=-1.12
 
 Confirm finding from rond-level difference by looking at frequency of strategies in classification
 ### Alt purple
 ```{r model-alt-purple}
-strategies <- read.csv(here("data_analysis/data_from_jan27_full/classified_strategies.csv"))
+# Convert proportions (0-1, in 0.25 steps) to integer counts out of 4
 strats <- setdiff(colnames(strategies), c("treatmentName", "game_number"))
 strategies <- strategies %>%
   mutate(across(all_of(strats), ~ as.numeric(.) * 4))
@@ -233,9 +332,9 @@ player_writing <- player_filtered %>%
     adviceFollowed = fromJSON(exitSurvey)$adviceFollowed,
     partnerAdvice = fromJSON(exitSurvey)$partnerAdvice,
     writtenPlan = fromJSON(writtenPlan)$plan,
-    we_used = str_count(tolower(adviceFollowed), "\\bwe\\b"),
-    I_used = str_count(tolower(adviceFollowed), "\\bi\\b"),
-    we_at_start = str_count(tolower(writtenPlan), "\\bwe\\b"),
+    we_used = str_count(tolower(adviceFollowed), "(?<![a-z])we(?![a-z])"),
+    I_used = str_count(tolower(adviceFollowed), "(?<![a-z])i(?![a-z])"),
+    we_at_start = str_count(tolower(writtenPlan), "(?<![a-z])we(?![a-z])"),
     bonus = bonus,
     gameID = gameID
   )
@@ -246,10 +345,11 @@ games_writing <- player_writing%>%group_by(gameID) %>%
 ### uses of we in written plan
 ```{r we-at-start-analyses}
 # Q. does advice type change the way we think about the game? Does it matter whether the advice is in common ground?
-advice_on_perception_inter <- glm(we_at_start ~ isCooperate*, data = games_writing,family=poisson)
-anova(advice_on_perception_inter,advice_on_perception)
+advice_on_perception <- glm(we_at_start ~ isCooperate, data = games_writing, family = poisson)
+advice_on_perception_inter <- glm(we_at_start ~ isCooperate * isCG, data = games_writing, family = poisson)
+anova(advice_on_perception, advice_on_perception_inter, test = "Chisq")
 summary(advice_on_perception_inter)
-kable(games_writing%>%group_by(Cooperate,CG)%>%summarise(we_at_start=mean(we_at_start)))
+kable(games_writing %>% group_by(isCooperate, isCG) %>% summarise(we_at_start = mean(we_at_start), .groups = "drop"))
 # A. Advice type does , but CG is very weak (p = approx. 0.2).
 
 # Q. does our initial perception predict fairness in the game?
@@ -260,12 +360,14 @@ summary(perception_on_fairness)
 
 ### uses of we in reflection (only CG condition)
 ```{r we-at-end-analyses}
-model_base <- lm(dif_bonus ~ we_at_start, data =cg_writing)
-summary(glm(we_at_start ~ isCooperate, data =cg_writing,family=poisson))
+# Filter to CG condition only
+cg_writing <- games_writing %>% filter(isCG)
 
-summary(glm(we_used ~ isCooperate, data =cg_writing,family=poisson))
+model_base <- lm(dif_bonus ~ we_at_start, data = cg_writing)
+summary(glm(we_at_start ~ isCooperate, data = cg_writing, family = poisson))
+
+summary(glm(we_used ~ isCooperate, data = cg_writing, family = poisson))
 # Q. Does fairness affect joint intention (perception of coordination in the game)
-cg_writing <- games_writing%>%filter(isCG)
 model <- lm(dif_bonus ~ we_used+isCooperate, data =cg_writing)
 model_base <- lm(dif_bonus ~ we_used, data =cg_writing)
 anova(model_base,model)
@@ -274,13 +376,19 @@ summary(model_base)
 summary(glm(we_used~dif_bonus,data=cg_writing,family=poisson))
 summary(glm(we_used~dif_bonus+isCooperate,data=cg_writing,family=poisson))
 summary(glm(we_used~dif_bonus+isCooperate,data=cg_writing,family=poisson))
-ggplot(cg_writing, aes(x = dif_bonus, y = we_used)) +
-  geom_jitter(width = 0.05, height = 0, alpha = 0.6, size = 2)+
-  geom_smooth(method = "lm",alpha=0.2, color = "blue", fill = "lightblue") +
-  labs(title = "Relationship between 'We' Usage in reflection, and Bonus Difference",
-       y = "Number of 'We' Used",
-       x = "Bonus Difference") +
-  theme_minimal()
+p_we_bonus <- ggplot(cg_writing, aes(x = dif_bonus, y = we_used)) +
+  geom_jitter(width = 1, height = 0, alpha = 0.6, size = 2.5) +
+  geom_smooth(method = "lm", alpha = 0.2, color = "blue", fill = "lightblue", linewidth = 1.2) +
+  scale_y_continuous(breaks = 0:max(cg_writing$we_used)) +
+  labs(x = "Bonus Difference Between Partners",
+       y = "Count of \"We\" in Reflection") +
+  ggthemes::theme_few(base_size = 16) +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12)
+  )
+p_we_bonus
+ggsave("we_vs_bonusDif.pdf", p_we_bonus, width = 6, height = 5)
 ```
 
 ```{r I-at-end-analyses}
@@ -312,9 +420,9 @@ library(patchwork)  # or use gridExtra
 
 # Create a list to store plots
 plot_list <- list()
-experimental_d <- read.csv(here("data_analysis/data_from_jan27_full/classified_strategies.csv"))
-for (tName in unique(experimental_d$treatmentName)) {
-  experimental_d_sub <- experimental_d[experimental_d$treatmentName == tName, ]
+# Note: strategies has been scaled x4 above, but frequencies = sum/total cancels the scaling.
+for (tName in unique(strategies$treatmentName)) {
+  experimental_d_sub <- strategies[strategies$treatmentName == tName, ]
   count = c(sum(experimental_d_sub$stable_orange), sum(experimental_d_sub$stable_purple), 
               sum(experimental_d_sub$alt_purple), sum(experimental_d_sub$both_stable),
               sum(experimental_d_sub$other))

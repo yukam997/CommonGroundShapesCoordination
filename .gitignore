@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+
+# R session artifacts
+.Rhistory
+.RData
+.Rapp.history
+Rplots*.pdf
+
+# Quarto local overrides and render artifacts
+*.qmd.local
+*_files/
+*.html
+
+# Empirica runtime / build artifacts
+**/.empirica/local/
+node_modules/
+dist/
+build/
+
+# Editor / agent metadata
+CLAUDE.md
+.claude/
+
+# Working drafts not meant for the public release
+paper_drafts/
+
+# Regenerated analysis outputs (produced by cogsci2026.qmd)
+analysis/round_bonus_diff.pdf
+analysis/we_vs_bonusDif.pdf
