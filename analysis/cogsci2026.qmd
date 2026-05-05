@@ -34,8 +34,6 @@ This analysis contains all code for producing graphs and stats in the Cogsci 202
 -   **Common Ground**: Both players know they received the same advice (CG) vs. only know their own advice (noCG)
 -   **Advice Type**: "Try to find an outcome that's fair for both of you" (cooperative) vs. "Try to get the best outcome for yourself" (selfish)
 
-All codes for cogsci 2026 Common Ground Affects Coordination paper:
-
 ```{r load-data, message=FALSE}
 # Load raw data
 player <- read.csv(here("data/combined_player.csv"))
