@@ -1,4 +1,4 @@
-# Yu2024_replication
+# The Content of Common Ground Shapes Coordination
 
 ## File explanations
 server, client, .empirica folders are for running the experiment.
