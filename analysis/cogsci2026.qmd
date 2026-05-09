@@ -270,6 +270,8 @@ p_round_diff <- ggplot(game_round, aes(x = round_display, y = bonus_diff, color 
   )
 p_round_diff
 ggsave("round_bonus_diff.pdf", p_round_diff, width = 10, height = 5)
+trends <- emtrends(m_round_dif, ~ isCG * isCooperate, var = "round")
+summary(trends)
 ```
 Stats to report: p=0.03, t=-2.17, beta=-1.12
 
@@ -360,10 +362,9 @@ summary(perception_on_fairness)
 ```{r we-at-end-analyses}
 # Filter to CG condition only
 cg_writing <- games_writing %>% filter(isCG)
-
-model_base <- lm(dif_bonus ~ we_at_start, data = cg_writing)
+model <- lm(dif_bonus ~ we_at_start, data =cg_writing)
+summary(model) # initial perception predicted outcome weakly (0.144)
 summary(glm(we_at_start ~ isCooperate, data = cg_writing, family = poisson))
-
 summary(glm(we_used ~ isCooperate, data = cg_writing, family = poisson))
 # Q. Does fairness affect joint intention (perception of coordination in the game)
 model <- lm(dif_bonus ~ we_used+isCooperate, data =cg_writing)
